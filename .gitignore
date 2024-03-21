@@ -1,0 +1,12 @@
+*~
+*.plt
+*.svg
+*.dxf
+build/
+dist/
+env/
+draft/
+__pycache__/
+*.ipynb_checkpoints
+venv/
+.vscode/
