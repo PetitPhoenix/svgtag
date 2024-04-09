@@ -2,17 +2,26 @@
 *.plt
 *.svg
 *.dxf
+<<<<<<< HEAD
 *.pyc
 *.pwj
 *.ud
+=======
+>>>>>>> 07ebb37339367126f73ef079d60a3ebaff85a375
 build/
 dist/
 env/
 draft/
 __pycache__/
+<<<<<<< HEAD
 inkex/*.inx
 .idea
 documentation/src/generators.inc
 *.ipynb_checkpoints
 venv/
 .vscode/
+=======
+*.ipynb_checkpoints
+venv/
+.vscode/
+>>>>>>> 07ebb37339367126f73ef079d60a3ebaff85a375
