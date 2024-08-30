@@ -1,13 +1,22 @@
-from text2svg import generate_svg
 import os
+from SVGprocess import SVG
 
 def shape_svg(width, height, thk, shape, hole):
-    elements = []
+    svg = SVG()  # Créer un nouvel objet SVG
     x0 = height / 2 if hole > 0 else 0
     y0 = 0
 
     if hole == 0:
-        elements.append(f'<rect x="{x0}" y="{y0}" width="{width}" height="{height}" fill="none" stroke="black" stroke-width="{thk}"/>')
+        # Ajout d'un rectangle directement à l'objet SVG
+        svg.add_element('rect', {
+            'x': x0,
+            'y': y0,
+            'width': width,
+            'height': height,
+            'fill': 'none',
+            'stroke': 'black',
+            'stroke-width': thk
+        })
     else:
         path_d = f"M {x0} {y0} h {width} v {height} h {-width} "
         if shape == 'rectangle':
@@ -17,24 +26,50 @@ def shape_svg(width, height, thk, shape, hole):
         elif shape == 'triangle':
             path_d += f"l {-height/2} {-height/2} l {height/2} {-height/2} "
         path_d += "z"
-        elements.append(f'<path d="{path_d}" fill="none" stroke="black" stroke-width="{thk}"/>')
+
+        # Ajout du path directement à l'objet SVG
+        svg.add_element('path', {
+            'd': path_d,
+            'fill': 'none',
+            'stroke': 'black',
+            'stroke-width': thk
+        })
 
         cx = 2 * hole + thk / 2
         cy = height / 2
-        elements.append(f'<circle cx="{cx}" cy="{cy}" r="{hole / 2}" fill="none" stroke="black" stroke-width="{thk}"/>')
 
-    return elements
+        # Ajout d'un cercle directement à l'objet SVG
+        svg.add_element('circle', {
+            'cx': cx,
+            'cy': cy,
+            'r': hole / 2,
+            'fill': 'none',
+            'stroke': 'black',
+            'stroke-width': thk
+        })
+
+    return svg
 
 def main():
     output_path = '../examples/outputs'
     width_mm = 80
     height_mm = 35
     thk = 1
-    shape = 'rectangle'
+    shape = 'circle'
     phi = 5
-    loc_vis = [0, 0, width_mm + height_mm / 2 if phi > 0 else width_mm, height_mm]
-    svg_shape = shape_svg(width_mm, height_mm, thk, shape, phi)
-    generate_svg(svg_shape, os.path.join(output_path, 'shape.svg'), loc_vis)
+    
+    # Appeler shape_svg pour créer l'objet SVG
+    svg = shape_svg(width_mm, height_mm, thk, shape, phi)
+    
+    # Définir les propriétés du SVG
+    svg.unit = 'mm'
+    svg.width = width_mm
+    svg.height = height_mm
+    svg.viewBox = [0, 0, width_mm + height_mm / 2 if phi > 0 else width_mm, height_mm]
+    svg.update_svg_content()
+    
+    # Générer le fichier SVG
+    svg.generate_svg_file(os.path.join(output_path, 'shape.svg'))
 
 if __name__ == "__main__":
     main()

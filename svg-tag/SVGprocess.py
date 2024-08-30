@@ -86,17 +86,19 @@ class SVG:
         element_matches = re.findall(f'<{tag}([^>]*)/>', content)
         for element_attrs in element_matches:
             attributes = self.parse_element_attributes(element_attrs)
-            # Extraire les transformations spécifiques à l'élément, s'il y en a
             element_transform = self.extract_transform_details(element_attrs)
-            # Appliquer à la fois la transformation de l'élément et celle du parent
             final_translate = [parent_translate[0] + element_transform[0][0], parent_translate[1] + element_transform[0][1]]
             final_scale = parent_scale * element_transform[1]
-            # Ajouter l'élément à la liste
-            self.elements.append({
-                'tag': tag,
-                'attributes': attributes,
-                'transform': {'translate': final_translate, 'scale': final_scale}
-            })
+            
+            # Ajout de validation avant d'ajouter l'élément
+            if isinstance(attributes, dict): 
+                self.elements.append({
+                    'tag': tag,
+                    'attributes': attributes,
+                    'transform': {'translate': final_translate, 'scale': final_scale}
+                })
+            else:
+                print(f"Warning: Attributes for element <{tag}/> are not a dictionary. Skipping element.")
     
     def extract_transform_details(self, transform_string):
         translate_match = re.search(r'translate\(([^)]*)\)', transform_string)
@@ -107,10 +109,19 @@ class SVG:
         
         return translate, scale
     
+    def add_svg(self, other_svg):
+        """Ajoute les éléments d'un autre objet SVG à celui-ci."""
+        for element in other_svg.elements:
+            self.elements.append(element)
+    
     def add_element(self, tag, attributes, transform=None):
         """Ajoute un élément SVG à la liste des éléments."""
-        element = {"tag": tag, "attributes": attributes, "transform": transform}
-        self.elements.append(element)
+        if isinstance(attributes, dict):
+            element = {"tag": tag, "attributes": attributes, "transform": transform}
+            self.elements.append(element)
+        else:
+            print(f"Warning: Attributes for element <{tag}/> are not a dictionary. Skipping element.")
+
     
     def add_path(self, d, translate=[0, 0], scale=1.0):
         """Ajoute un chemin à la liste des éléments avec transformation optionnelle."""
@@ -184,25 +195,29 @@ class SVG:
 
     def process_element(self, element):
         """Traite un seul élément SVG pour générer sa représentation en chaîne."""
-        attributes_str = self.format_attributes(element.get('attributes', {}))
-        # Ajout des transformations, si présentes
-        if element.get('transform'):
-            transform_parts = []
-            if 'translate' in element['transform']:
-                translate = element['transform']['translate']
-                transform_parts.append(f'translate({translate[0]}, {translate[1]})')
-            if 'scale' in element['transform']:
-                scale = element['transform']['scale']
-                if scale != 1:  # Évite d'ajouter des transformations de mise à l'échelle inutiles
-                    transform_parts.append(f'scale({scale})')
-            if transform_parts:
-                attributes_str += ' transform="' + ' '.join(transform_parts) + '"'
-
-        if element['tag'] == 'g':
-            children_content = ''.join([self.process_element(child) for child in element.get('elements', [])])
-            return f'<g {attributes_str}>\n{children_content}</g>\n'
+        if isinstance(element, dict):
+            attributes_str = self.format_attributes(element.get('attributes', {}))
+            if element.get('transform'):
+                transform_parts = []
+                if 'translate' in element['transform']:
+                    translate = element['transform']['translate']
+                    transform_parts.append(f'translate({translate[0]}, {translate[1]})')
+                if 'scale' in element['transform']:
+                    scale = element['transform']['scale']
+                    if scale != 1:
+                        transform_parts.append(f'scale({scale})')
+                if transform_parts:
+                    attributes_str += ' transform="' + ' '.join(transform_parts) + '"'
+    
+            if element['tag'] == 'g':
+                children_content = ''.join([self.process_element(child) for child in element.get('elements', [])])
+                return f'<g {attributes_str}>\n{children_content}</g>\n'
+            else:
+                return f'<{element["tag"]} {attributes_str} />\n'
         else:
-            return f'<{element["tag"]} {attributes_str} />\n'    
+            print(f"Error: Element is not a dictionary. Received: {element}")
+            return ""  # Retourner une chaîne vide en cas d'erreur pour éviter de corrompre le SVG
+
     
     def update_svg_content(self):
         # Mise à jour ou ajout des attributs de largeur et de hauteur

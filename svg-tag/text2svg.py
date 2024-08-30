@@ -213,11 +213,22 @@ def text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interl
     return svg
 
 def flip(svg_elements, position):
-    # Join the SVG elements into one string if they are in a list
-    svg_elements = ''.join(svg_elements)
-    # Wrap the elements with the group tag and transformations
-    svg_elements = f'<g transform="scale(-1, 1) translate(-{position}, 0)">\n{svg_elements}</g>\n'
-    return svg_elements
+    flipped_elements = []
+    for element in svg_elements:
+        # Si l'élément a des transformations, appliquez la transformation flip
+        if 'transform' not in element:
+            element['transform'] = {'translate': [0, 0], 'scale': 1.0}
+
+        # Ajoutez une transformation de mise à l'échelle horizontale (flip)
+        element['transform']['scale'] = -1  # Inversion horizontale
+        translate_x, translate_y = element['transform'].get('translate', [0, 0])
+        # Ajuste la translation pour compenser l'inversion
+        element['transform']['translate'] = [position - translate_x, translate_y]
+        
+        flipped_elements.append(element)
+    
+    return flipped_elements
+
 
 def main():
     # Paramètres de texte
