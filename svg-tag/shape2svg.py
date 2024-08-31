@@ -3,10 +3,13 @@ from SVGprocess import SVG
 
 def shape_svg(width, height, thk, shape, hole):
     svg = SVG()  # Créer un nouvel objet SVG
-    x0 = height / 2 if hole > 0 else 0
+    x0 = 0
     y0 = 0
 
+    svg.height = height
     if hole == 0:
+        svg.width = width
+        svg.viewBox = [0, 0, width, height]
         # Ajout d'un rectangle directement à l'objet SVG
         svg.add_element('rect', {
             'x': x0,
@@ -18,6 +21,8 @@ def shape_svg(width, height, thk, shape, hole):
             'stroke-width': thk
         })
     else:
+        svg.width = width + height / 2
+        svg.viewBox = [- height / 2 , 0, width + height / 2, height]
         path_d = f"M {x0} {y0} h {width} v {height} h {-width} "
         if shape == 'rectangle':
             path_d += f"h {-height/2} v {-height} h {height/2} "
@@ -35,7 +40,7 @@ def shape_svg(width, height, thk, shape, hole):
             'stroke-width': thk
         })
 
-        cx = 2 * hole + thk / 2
+        cx = - hole - thk / 2
         cy = height / 2
 
         # Ajout d'un cercle directement à l'objet SVG
@@ -47,7 +52,8 @@ def shape_svg(width, height, thk, shape, hole):
             'stroke': 'black',
             'stroke-width': thk
         })
-
+    
+    svg.update_svg_content()
     return svg
 
 def main():
@@ -63,10 +69,6 @@ def main():
     
     # Définir les propriétés du SVG
     svg.unit = 'mm'
-    svg.width = width_mm
-    svg.height = height_mm
-    svg.viewBox = [0, 0, width_mm + height_mm / 2 if phi > 0 else width_mm, height_mm]
-    svg.update_svg_content()
     
     # Générer le fichier SVG
     svg.generate_svg_file(os.path.join(output_path, 'shape.svg'))

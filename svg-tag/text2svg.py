@@ -92,20 +92,20 @@ def calculate_line_metrics(text, font, scale):
 
 def draw_text_line(text, x, y, font, font_size, scale):
     """
-    Génère les éléments SVG d'un texte.
+    Define the SVG elements of a text
     
     Args:
-        text: Le texte à dessiner.
-        x, y: Position initiale pour le texte.
-        font_size: Taille de la police.
-        scale: Conversion de unitsPerEm en mm.
+        text: Text to draw.
+        x, y: Initial position for the text.
+        font_size: Font size.
+        scale: Convertion from unitsPerEm in mm.
     
     Returns:
-        Une liste de dictionnaires, chacun représentant un élément SVG `<path>`.
+        List of dictionaries, each one representing a SVG element `<path>`.
     """
     glyphset = font.getGlyphSet()
     kerning_table = font['kern'].kernTables[0].kernTable if 'kern' in font else {}
-    elements = []  # Liste pour stocker les éléments de données des paths
+    elements = []  # List to store the data elements of paths
     previous_glyph_name = None
     for char in text:
         glyph_name = font.getBestCmap()[ord(char)]
@@ -121,7 +121,7 @@ def draw_text_line(text, x, y, font, font_size, scale):
             tpen = TransformPen(pen, (scale, 0, 0, -scale, x, y))
             glyph.draw(tpen)
             path_data = pen.getCommands()
-            # Créer un élément de données pour chaque path
+            # Create a data element for each path
             elements.append({
                 'tag': 'path',
                 'attributes': {'d': path_data}
@@ -134,20 +134,20 @@ def split_text(text, n):
     Split the text in several (n) lines.
     """
     words = text.split()
-    # Si le texte doit être sur une seule ligne ou si le nombre de mots est inférieur au nombre de lignes souhaitées
+    # If the text shall be in one line of if the number of words is lower than the required number of lines
     if n == 1 or len(words) < n:
         return [text]
     
-    # Calculer la longueur approximative des lignes
+    # Computes approximatively the number of lines
     avg = len(words) // n
     lines = []
     start = 0
-    for i in range(n - 1):  # Diviser en n-1 lignes pour s'assurer que tous les mots sont inclus
+    for i in range(n - 1):  # Split in n-1 lines to make sure that all words are included
         end = start + avg
         lines.append(' '.join(words[start:end]))
         start = end
     
-    # Ajouter le reste des mots à la dernière ligne
+    # Add the rest of the words to the last line
     lines.append(' '.join(words[start:]))
     return lines
 
@@ -166,7 +166,8 @@ def shape_text(text, font, zone_width, zone_height, scale, interline_ratio = 0.8
     
     line_metrics = [calculate_line_metrics(line, font, scale) for line in text_lines]
     total_height = line_metrics[0]['ascent'] + (n - 1) * interline - line_metrics[-1]['descent']
-    total_width = line_metrics[0]['width']
+    total_width = max([metric['width'] for metric in line_metrics]) # line_metrics[0]['width']
+    
     if total_width / total_height < aspect_ratio:
         scale *= zone_height / total_height
     else:
@@ -188,7 +189,7 @@ def text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interl
     else:
         scale = 100 / (72 * unitsPerEm) * 25.4
     
-    svg = SVG('', ppi=96)  # PPI peut être ajusté en fonction de vos besoins
+    svg = SVG('', ppi=96)
     text_lines, n, scale_max = shape_text(text, font, zone_width, zone_height, scale, interline_ratio)
     if font_size is None:
         scale = scale_max
@@ -200,7 +201,7 @@ def text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interl
     else:
         total_height = line_metrics[0]['height']
     
-    # Centrer verticalement le bloc de texte combiné dans la zone
+    # Center vertically the combined text bloc within the area
     vertical_center = y0 + zone_height / 2
     horizontal_center = x0 + zone_width / 2
     
@@ -209,20 +210,20 @@ def text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interl
         start_X = horizontal_center - text_width / 2
         start_Y = vertical_center - total_height / 2 + line_metrics[0]['ascent'] + i * interline
         svg_elements = draw_text_line(line, start_X , start_Y, font, font_size, scale)
-        svg.add_group(svg_elements, translate=[0, 0], scale=1.0)  # Utiliser les transformations au besoin
+        svg.add_group(svg_elements, translate=[0, 0], scale=1.0)
     return svg
 
 def flip(svg_elements, position):
     flipped_elements = []
     for element in svg_elements:
-        # Si l'élément a des transformations, appliquez la transformation flip
+        # If the element has transformations, apply a flip
         if 'transform' not in element:
             element['transform'] = {'translate': [0, 0], 'scale': 1.0}
 
-        # Ajoutez une transformation de mise à l'échelle horizontale (flip)
-        element['transform']['scale'] = -1  # Inversion horizontale
+        # Add a horizontal scaling transformation (flip)
+        element['transform']['scale'] = -1  # Invert horizontally
         translate_x, translate_y = element['transform'].get('translate', [0, 0])
-        # Ajuste la translation pour compenser l'inversion
+        # Adjust the translation to compensation the inversion
         element['transform']['translate'] = [position - translate_x, translate_y]
         
         flipped_elements.append(element)
@@ -231,20 +232,19 @@ def flip(svg_elements, position):
 
 
 def main():
-    # Paramètres de texte
-    # text = "Un texte court"
+    # Text parameters
     text = "Un long texte à diviser ou ajuster"
     font_path = '../static/fonts/Allison/Allison-Regular.ttf'
     font_size = None
     
-    # Paramètres visuels [mm]
-    zoneWidth_mm = 100
+    # Visual parameters [mm]
+    zoneWidth_mm = 80
     zoneHeight_mm = 40
     x_mm = 20
     y_mm = 10
     interline_ratio = 0.6
     
-    # Générer le fichier SVG
+    # Generate SVG file
     output_path = '../examples/outputs'
     svg_text = text_svg(text, font_path, font_size, zoneWidth_mm - x_mm, zoneHeight_mm - y_mm, x_mm, y_mm, interline_ratio = interline_ratio)
     svg_text.unit = 'mm'
@@ -252,9 +252,8 @@ def main():
     svg_text.height = zoneHeight_mm
     svg_text.viewBox = [0, 0, zoneWidth_mm, zoneHeight_mm]
     svg_text.update_svg_content()
-    svg_text.generate_svg_file(os.path.join(output_path, 'text_0_rec.svg'))
     svg_text.add_element("rect", {"x": x_mm, "y": y_mm, "width": zoneWidth_mm - x_mm, "height": zoneHeight_mm - y_mm, "stroke": "black", "fill": "transparent", "stroke-width": 0.1 }, {"translate": (0, 0), "scale": 1})
-    svg_text.generate_svg_file(os.path.join(output_path, 'text_1_rec.svg'))
+    svg_text.generate_svg_file(os.path.join(output_path, 'text_rec.svg'))
 
 if __name__ == "__main__":
     main()
