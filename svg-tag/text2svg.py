@@ -193,6 +193,8 @@ def text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interl
     text_lines, n, scale_max = shape_text(text, font, zone_width, zone_height, scale, interline_ratio)
     if font_size is None:
         scale = scale_max
+    else:
+        scale = min(scale, scale_max)
     interline = calculate_interline(font, scale, interline_ratio)
     
     line_metrics = [calculate_line_metrics(line, font, scale) for line in text_lines]
