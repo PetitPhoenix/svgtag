@@ -52,10 +52,10 @@ if __name__ == "__main__":
         {"Catégorie": "Basique", "Id": 3, "Recto": "Oreilles", "Verso": "Attention au milieu"},
         {"Catégorie": "Basique", "Id": 4, "Recto": "Attends", "Verso": "Ralentis"},
         {"Catégorie": "Sécurité", "Id": 1, "Recto": "Ça va ?", "Verso": "Ça va pas !"},
-        {"Catégorie": "Sécurité", "Id": 2, "Recto": "Essouflé", "Verso": "Panne d'air"},
-        {"Catégorie": "Sécurité", "Id": 3, "Recto": "Froid", "Verso": "Narcose"},
+        {"Catégorie": "Sécurité", "Id": 2, "Recto": "Essoufflé", "Verso": "Panne d'air"},
+        {"Catégorie": "Sécurité", "Id": 3, "Recto": "J'ai froid", "Verso": "Narcose"},
         {"Catégorie": "Tek", "Id": 1, "Recto": "Changement de gaz", "Verso": "Run-time de secours"},
-        {"Catégorie": "Tek", "Id": 2, "Recto": "Dévidoir", "Verso": "Profondeur max?"},
+        {"Catégorie": "Tek", "Id": 2, "Recto": "Dévidoir", "Verso": "Profondeur max ?"},
         {"Catégorie": "Autonomie", "Id": 1, "Recto": "Bateau", "Verso": "Parachute"},
         {"Catégorie": "Autonomie", "Id": 2, "Recto": "Paliers", "Verso": "Ordinateur"},
         {"Catégorie": "Autonomie", "Id": 3, "Recto": "Mètres", "Verso": "3m 6m 9m"},
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         {"Catégorie": "Stabilisation", "Id": 1, "Recto": "Purge", "Verso": "Gonfle"},
         {"Catégorie": "Stabilisation", "Id": 2, "Recto": "Stabilise-toi", "Verso": "Purge lente"},
         {"Catégorie": "Stabilisation", "Id": 3, "Recto": "Purge haute", "Verso": "Purge basse"},
-        {"Catégorie": "Stabilisation", "Id": 4, "Recto": "Monte", "Verso": "Descend"},
+        {"Catégorie": "Stabilisation", "Id": 4, "Recto": "Monte", "Verso": "Descends"},
         {"Catégorie": "Ventilation", "Id": 1, "Recto": "Apnée", "Verso": "Souffle"},
         {"Catégorie": "Ventilation", "Id": 2, "Recto": "Inspiratoire", "Verso": "Expiratoire"},
         {"Catégorie": "Ventilation", "Id": 3, "Recto": "Lâcher embout", "Verso": "Reprise embout"},
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         {"Catégorie": "Breathing", "Id": 3, "Recto": "Take out regulator", "Verso": "Take regulator"},
         {"Catégorie": "Breathing", "Id": 4, "Recto": "Breathe-in", "Verso": "Breathe-out"}]
     
-    data = EN
+    data = FR
     df = pd.DataFrame(data)
     print(df)
     

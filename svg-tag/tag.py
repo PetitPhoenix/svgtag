@@ -22,10 +22,17 @@ def tag(text, output, include_shape = True, outline = False):
     font_size = 60
     interline_ratio = 0.8
     ratio_print = 0.9
+    padding = 5
+    border = 2
     
     # Reduce the area not to avoid touching the borders
-    width_txt = zoneWidth_mm * ratio_print
-    height_txt = zoneHeight_mm * ratio_print
+    if padding == None:
+        width_txt = zoneWidth_mm * ratio_print
+        height_txt = zoneHeight_mm * ratio_print
+    else:
+        width_txt = zoneWidth_mm - 2 * padding
+        height_txt = zoneHeight_mm - 2 * padding
+        
     x_mm = 0
     y_mm = 0
     x_txt = x_mm + (zoneWidth_mm - width_txt) / 2
@@ -45,6 +52,8 @@ def tag(text, output, include_shape = True, outline = False):
     
     if outline == True:
         svg.add_element("rect", {"x": x_txt, "y": y_txt, "width": width_txt - x_mm, "height": height_txt - y_mm, "stroke": "black", "fill": "transparent", "stroke-width": 0.1 }, {"translate": (0, 0), "scale": 1})
+        if border != None:
+            svg.add_element("rect", {"x": x_txt - border, "y": y_txt - border, "width": width_txt + 2 * border - x_mm, "height": height_txt + 2 * border - y_mm, "stroke": "black", "fill": "transparent", "stroke-width": 0.1 }, {"translate": (0, 0), "scale": 1})
     
     svg.height = zoneHeight_mm
     if phi == 0:
