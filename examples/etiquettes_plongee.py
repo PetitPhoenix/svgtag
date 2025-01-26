@@ -1,7 +1,9 @@
 import sys
-sys.path.append(r'C:\TOOLS\Perso\svg-tag\svg-tag')
-
 import os
+parent_dir = os.path.dirname(os.getcwd())
+svg_tag_path = os.path.join(parent_dir, 'svg_tag')
+sys.path.append(svg_tag_path)
+
 os.environ['path'] += r';C:\TOOLS\01_Portable\InkscapePortable\App\Inkscape\bin'
 import cairosvg
 
@@ -29,7 +31,7 @@ def batch_tags(data, RV = False):
         output_2_r = os.path.join(output_path, nom_fichier + '_A_txt.svg')
         tag(recto, output_2_r, include_shape=False, outline=False)
 
-        # Créer les fichiers SVG pour le recto
+        # Créer les fichiers SVG pour le verso
         output_1_v = os.path.join(output_path, nom_fichier + '_B_shp.svg')
         tag(verso, output_1_v, include_shape=True, outline=True)
         cairosvg.svg2png(url=output_1_v, write_to=os.path.join(output_path, nom_fichier + '_B.png'))

@@ -1,6 +1,8 @@
 import sys
 import os
 import datetime
+import sys
+sys.path.append(r'C:\TOOLS\Perso\svg-tag\svg-tag')
 
 parent_dir = os.path.dirname(os.getcwd())
 svg_tag_path = os.path.join(parent_dir, 'svg_tag')
