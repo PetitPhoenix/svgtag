@@ -2,24 +2,18 @@ import os
 import trimesh
 import numpy as np
 
-from shape2svg import shape_svg
-from text2svg import text_svg# , flip
-from SVGprocess import SVG
+from ..shape2svg import shape_svg
+from ..text2svg import text_svg
+from ..SVGprocess import SVG
 
-def tag(text, output, include_shape = True, outline = False):
+def tag(text, font_path, length, height, output, phi=None, shape='circle', outline=False):
     # Shape parameters [mm]
-    shape = 'circle'  # 'rectangle', 'triangle', ou 'circle'
-    # transform = '' # '', 'flip' 
-    phi = 5
-    zoneWidth_mm = 80
-    zoneHeight_mm = 35
-    thk = 1
-    
-    # loc_vis = [0, 0, zoneWidth_mm + zoneHeight_mm / 2 if phi > 0 else zoneWidth_mm, zoneHeight_mm]
+    zoneWidth_mm = length
+    zoneHeight_mm = height
+    thk = 0.1
     
     # Text parameters
-    font_path = '../static/fonts/Impact/impact.ttf'
-    font_size = 60
+    font_size = None
     interline_ratio = 0.8
     ratio_print = 0.9
     padding = 5
@@ -38,11 +32,7 @@ def tag(text, output, include_shape = True, outline = False):
     x_txt = x_mm + (zoneWidth_mm - width_txt) / 2
     y_txt = y_mm + (zoneHeight_mm - height_txt) / 2
     
-    # if transform == 'flip':
-    #     x_txt = 0
-    #     svg_shape = flip(svg_shape, loc_vis[2])
-    
-    if include_shape == True:
+    if shape != None:
         svg = shape_svg(zoneWidth_mm, zoneHeight_mm, thk, shape, phi)
     else:
         svg = SVG('', ppi=96)
@@ -66,13 +56,13 @@ def tag(text, output, include_shape = True, outline = False):
     svg.generate_svg_file(output)
 
 def tag_3D(filename, input_path, output_path):
-    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape_ink.svg'))
+    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
     shape_mesh = shape_svg.extrude(3)
     
-    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole_ink.svg'))
+    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
     hole_mesh = hole_svg.extrude(3)
     
-    logo_svg = trimesh.load_path('../examples/static/images/Tetsudau_logo.svg')
+    logo_svg = trimesh.load_path(os.path.join(input_path, 'Tetsudau_logo.svg'))
     logo_mesh = logo_svg.extrude(0.5)
     logo_mesh = trimesh.boolean.union(logo_mesh)
     logo_mesh = logo_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 1, 0]))
@@ -101,10 +91,10 @@ def tag_3D(filename, input_path, output_path):
     print(f"STL saved at {os.path.abspath(os.path.join(output_path, f'{filename}_X.stl'))}")
 
 def tag_3D_RV(recto, verso, input_path, output_path):
-    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape_ink.svg'))
+    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
     shape_mesh = shape_svg.extrude(3)
     
-    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole_ink.svg'))
+    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
     hole_mesh = hole_svg.extrude(3)
     
     recto_svg = trimesh.load_path(os.path.join(input_path, f'{recto}.svg'))
@@ -137,21 +127,3 @@ def tag_3D_RV(recto, verso, input_path, output_path):
     recto_mesh.export(os.path.join(output_path, f'{recto}_1.stl'))
     verso_mesh.export(os.path.join(output_path, f'{verso}_1.stl'))
     print(f"STL saved at {os.path.abspath(os.path.join(output_path, f'{outputname}_X.stl'))}")
-
-def main():
-    text1 = "Impression d'une étiquette"
-    text2 = "Recto / Verso"
-
-    output_path = '../examples/outputs'
-    tag("", os.path.join(output_path, 'tag_shp.svg'), include_shape = True, outline = True)
-    tag(text1, os.path.join(output_path, 'tag1.svg'), include_shape = True, outline = True)
-    tag(text1, os.path.join(output_path, 'tag_txt1.svg'), include_shape = False, outline = False)
-    tag(text2, os.path.join(output_path, 'tag2.svg'), include_shape = True, outline = True)
-    tag(text2, os.path.join(output_path, 'tag_txt2.svg'), include_shape = False, outline = False)
-    
-    input_path = output_path
-    #tag_3D('tag_txt1, input_path, output_path)
-    tag_3D_RV('tag_txt1', 'tag_txt2', input_path, output_path)
-
-if __name__ == "__main__":
-    main()

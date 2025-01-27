@@ -1,7 +1,6 @@
-import os
 from .SVGprocess import SVG
 
-def shape_svg(width, height, thk, shape, hole):
+def shape_svg(width, height, thk, shape, hole=0):
     svg = SVG()  # Créer un nouvel objet SVG
     x0 = 0
     y0 = 0
@@ -55,23 +54,3 @@ def shape_svg(width, height, thk, shape, hole):
     
     svg.update_svg_content()
     return svg
-
-def main():
-    output_path = '../examples/outputs'
-    width_mm = 80
-    height_mm = 35
-    thk = 1
-    shape = 'circle'
-    phi = 5
-    
-    # Appeler shape_svg pour créer l'objet SVG
-    svg = shape_svg(width_mm, height_mm, thk, shape, phi)
-    
-    # Définir les propriétés du SVG
-    svg.unit = 'mm'
-    
-    # Générer le fichier SVG
-    svg.generate_svg_file(os.path.join(output_path, 'shape.svg'))
-
-if __name__ == "__main__":
-    main()

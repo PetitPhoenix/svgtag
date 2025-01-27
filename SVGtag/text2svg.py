@@ -1,5 +1,4 @@
-from SVGprocess import SVG
-import os
+from .SVGprocess import SVG
 from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
@@ -231,32 +230,3 @@ def flip(svg_elements, position):
         flipped_elements.append(element)
     
     return flipped_elements
-
-
-def main():
-    # Text parameters
-    text = "Un long texte à diviser ou ajuster"
-    font_path = '../static/fonts/Allison/Allison-Regular.ttf'
-    font_size = None
-    
-    # Visual parameters [mm]
-    zoneWidth_mm = 80
-    zoneHeight_mm = 40
-    x_mm = 20
-    y_mm = 10
-    interline_ratio = 0.6
-    
-    # Generate SVG file
-    output_path = '../examples/outputs'
-    svg_text = text_svg(text, font_path, font_size, zoneWidth_mm - x_mm, zoneHeight_mm - y_mm, x_mm, y_mm, interline_ratio = interline_ratio)
-    svg_text.unit = 'mm'
-    svg_text.width = zoneWidth_mm
-    svg_text.height = zoneHeight_mm
-    svg_text.viewBox = [0, 0, zoneWidth_mm, zoneHeight_mm]
-    svg_text.update_svg_content()
-    svg_text.add_element("rect", {"x": x_mm, "y": y_mm, "width": zoneWidth_mm - x_mm, "height": zoneHeight_mm - y_mm, "stroke": "black", "fill": "transparent", "stroke-width": 0.1 }, {"translate": (0, 0), "scale": 1})
-    svg_text.generate_svg_file(os.path.join(output_path, 'text_rec.svg'))
-
-if __name__ == "__main__":
-    main()
-    
