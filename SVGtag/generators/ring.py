@@ -10,6 +10,9 @@ X = np.array([1, 0, 0])
 Y = np.array([0, 1, 0])
 Z = np.array([0, 0, 1])
 
+ring_dir = os.path.dirname(os.path.abspath(__file__))
+fonts_dir = os.path.join(os.path.dirname(os.path.dirname(ring_dir)), 'static', 'fonts')
+
 def plot(data):
     fig, ax = plt.subplots(figsize=(2,6))
     ax.plot(data[:, 0], data[:, 1], marker='.')
@@ -158,7 +161,7 @@ def ring(text, diameter, height, thickness, res, font_path, output_path, filenam
     if brand:
         # Generate brand mesh
         brand_width = 30
-        tag('Tetsudau', '../static/fonts/Allison/Allison-Regular.ttf', brand_width, height, os.path.join(output_path, 'brand.svg'), shape = None, outline = False)
+        tag('Tetsudau', os.path.join(fonts_dir, 'Allison', 'Allison-Regular.ttf'), brand_width, height, os.path.join(output_path, 'brand.svg'), shape = None, outline = False)
         brand_mesh = mesh_from_path(os.path.join(output_path, 'brand.svg'), -thickness)
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = -np.pi / 2, direction = [1, 0, 0]))
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 0, 1]))
@@ -169,7 +172,6 @@ def ring(text, diameter, height, thickness, res, font_path, output_path, filenam
     napkin_mesh = trimesh.boolean.difference([ring_mesh, txt_mesh])
     if brand:
         napkin_mesh = trimesh.boolean.difference([napkin_mesh, brand_mesh])
-    export(napkin_mesh, style='stl', path = output_path, name = filename)
     
     if vis==True:
         # Create a scene for visualization
