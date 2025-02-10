@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='SVGtag',
-    version='0.3',
+    version='0.4',
     description='Generate 3D meshes from signed distance functions.',
     author='Stéphane Besnard',
     author_email='stephane.c.m.besnard@gmail.com',

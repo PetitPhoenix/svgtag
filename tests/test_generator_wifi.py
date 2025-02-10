@@ -24,11 +24,13 @@ class TestQRCodeGeneration(unittest.TestCase):
         self.output_path = os.path.join(os.path.dirname(__file__), 'outputs', 'generators', 'wifi')
         os.makedirs(self.output_path, exist_ok=True)
         self.filename = 'Commande_XYZ'
+        self.static_files_path = os.path.join(os.path.dirname(__file__), '..', 'static')
 
     def test_qr_code_generation(self):
         svg_instance = QR_gen(
             self.network, self.password, self.protocol, self.hidden,
-            self.text_elements, self.width_mm, self.height_mm, self.padding_mm
+            self.text_elements, self.width_mm, self.height_mm, self.padding_mm,
+            self.static_files_path
         )
         output_file = os.path.join(self.output_path, self.filename + '.svg')
         svg_instance.generate_svg_file(output_file)

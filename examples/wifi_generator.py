@@ -5,6 +5,7 @@ from SVGtag.scripts.export import prepare_target_directory, convert_svg_with_ink
 
 # Paramètres personnels
 inkscape_path = r"C:\TOOLS\01_Portable\InkscapePortable\App\Inkscape\bin\Inkscape.exe"
+static_files_path = os.path.join(os.path.dirname(__file__), '..', 'static')
 
 # Paramètres de réseau
 network = 'MyNetwork'
@@ -37,7 +38,7 @@ output_path = os.path.join(os.path.dirname(__file__), 'outputs', 'wifi')
 os.makedirs(output_path, exist_ok=True)
 
 # Générer le code QR
-svg_instance = QR_gen(network, password, protocol, hidden, text_elements, width_mm, height_mm, padding_mm)
+svg_instance = QR_gen(network, password, protocol, hidden, text_elements, width_mm, height_mm, padding_mm, static_files_path)
 
 # Enregistrer le fichier SVG
 output_file = os.path.join(output_path, filename + '.svg')
