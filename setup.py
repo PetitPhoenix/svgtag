@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='SVGtag',
-    version='0.2',
+    version='0.3',
     description='Generate 3D meshes from signed distance functions.',
     author='Stéphane Besnard',
     author_email='stephane.c.m.besnard@gmail.com',
@@ -13,7 +13,8 @@ setup(
         'pandas',
         'fonttools>=4.48.1',
         'qrcode',
-        'Pillow'
+        'Pillow',
+        'trimesh'
     ],
     license='MIT',
     classifiers=(

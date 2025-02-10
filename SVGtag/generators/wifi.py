@@ -6,6 +6,8 @@ import qrcode
 import qrcode.image.svg
 # https://github.com/lincolnloop/python-qrcode
 
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
 def QR_svg(network, password, protocol, hidden, box_size=10, border=0):
     # factory = qrcode.image.svg.SvgImage # Simple factory, just a set of rects
     # factory = qrcode.image.svg.SvgFragmentImage # Fragment factory (also just a set of rects)
@@ -75,14 +77,14 @@ def QR_gen(network, password, protocol, hidden, text_elements, width_mm, height_
                            translate=[width_mm * 3 / 4 - qr_svg.width * scale / 2, height_mm / 2 + padding_mm], 
                            scale=scale)
     
-    wifi = read_svg(r'..\static\images\wifi.svg')
+    wifi = read_svg(os.path.join(base_dir, 'static', 'images', 'wifi.svg'))
     wifi = SVG(wifi)
     scale = min((width_mm / 6) / wifi.width, (height_mm / 12) / wifi.height)
     svg_instance.add_group(wifi.elements, 
                            translate=[width_mm * 3 / 4 - wifi.width * scale / 2, height_mm / 2 - wifi.height * scale / 2], 
                            scale=scale)
     
-    signal = read_svg(r'..\static\images\network.svg')
+    signal = read_svg(os.path.join(base_dir, 'static', 'images', 'network.svg'))
     signal = SVG(signal)
     scale = min((width_mm / 3 - 2 * padding_mm) / signal.width, (height_mm / 2 - 2 * padding_mm) / signal.height)
     svg_instance.add_group(signal.elements, 
