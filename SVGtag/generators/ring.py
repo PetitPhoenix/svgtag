@@ -10,9 +10,6 @@ X = np.array([1, 0, 0])
 Y = np.array([0, 1, 0])
 Z = np.array([0, 0, 1])
 
-ring_dir = os.path.dirname(os.path.abspath(__file__))
-fonts_dir = os.path.join(os.path.dirname(os.path.dirname(ring_dir)), 'static', 'fonts')
-
 def plot(data):
     fig, ax = plt.subplots(figsize=(2,6))
     ax.plot(data[:, 0], data[:, 1], marker='.')
@@ -132,7 +129,7 @@ def mesh_from_path(pathname, thickness):
         mesh = trimesh.boolean.union(mesh)
     return mesh
 
-def ring(text, diameter, height, thickness, res, font_path, output_path, filename, shape=1, brand=True, vis=False):
+def ring(text, diameter, height, thickness, res, font_dir, font, output_path, filename, shape=1, brand=True, vis=False):
     length = np.pi * (diameter - thickness)
     r = 0.25
     R_ext = diameter / 2
@@ -148,7 +145,7 @@ def ring(text, diameter, height, thickness, res, font_path, output_path, filenam
 
 
     outputname = os.path.join(output_path, filename + '.svg')
-    tag(text, font_path, length, height, outputname, phi=None, shape = None, outline = False)
+    tag(text, os.path.join(font_dir, font), length, height, outputname, phi=None, shape = None, outline = False)
     cairosvg.svg2png(url=outputname, write_to=os.path.join(output_path, filename + '.png'))
 
     # Generate text mesh
@@ -161,7 +158,7 @@ def ring(text, diameter, height, thickness, res, font_path, output_path, filenam
     if brand:
         # Generate brand mesh
         brand_width = 30
-        tag('Tetsudau', os.path.join(fonts_dir, 'Allison', 'Allison-Regular.ttf'), brand_width, height, os.path.join(output_path, 'brand.svg'), shape = None, outline = False)
+        tag('Tetsudau', os.path.join(font_dir, 'Allison', 'Allison-Regular.ttf'), brand_width, height, os.path.join(output_path, 'brand.svg'), shape = None, outline = False)
         brand_mesh = mesh_from_path(os.path.join(output_path, 'brand.svg'), -thickness)
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = -np.pi / 2, direction = [1, 0, 0]))
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 0, 1]))
