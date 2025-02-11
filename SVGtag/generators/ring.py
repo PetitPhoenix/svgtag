@@ -93,6 +93,8 @@ def gen3D(coords, RES=20, export=0, visu=0):
             file.write(trimesh.viewer.scene_to_html(s))
     return s, mesh
 
+def to_html(mesh): return trimesh.viewer.scene_to_html(trimesh.Scene(mesh))
+
 def export(mesh, style='html', path=None, name=None):
     scene = trimesh.Scene(mesh)
     if style == 'scene':
@@ -140,13 +142,11 @@ def ring(text, diameter, height, thickness, res, font_dir, font, output_path, fi
     if vis==True:
         plot(vertices)
 
-    s, ring_mesh = gen3D(vertices[:,0:2], export=0, visu=0)
-    # gen3D(vertices, RES=20, export=2, visu=0)
-
+    s, ring_mesh = gen3D(vertices[:,0:2])
 
     outputname = os.path.join(output_path, filename + '.svg')
     tag(text, os.path.join(font_dir, font), length, height, outputname, phi=None, shape = None, outline = False)
-    cairosvg.svg2png(url=outputname, write_to=os.path.join(output_path, filename + '.png'))
+    # cairosvg.svg2png(url=outputname, write_to=os.path.join(output_path, filename + '.png'))
 
     # Generate text mesh
     txt_mesh = mesh_from_path(outputname, -thickness)
@@ -182,7 +182,6 @@ def ring(text, diameter, height, thickness, res, font_dir, font, output_path, fi
         txt_mesh.visual.face_colors = [255, 38, 75, 255]
         brand_mesh.visual.face_colors = [255, 38, 75, 255]
         napkin_mesh.visual.face_colors = [0, 191, 255, 255]
-        
         
         scene = trimesh.Scene()
         geometries = [ring_mesh, txt_mesh, napkin_mesh.apply_transform(trimesh.transformations.scale_and_translate(scale=[1, 1, 1], translate=[0, 0, 1.5 * height]))]
