@@ -1,5 +1,4 @@
 import os
-import cairosvg
 import matplotlib.pyplot as plt
 import numpy as np
 import trimesh
@@ -145,8 +144,8 @@ def ring(text, diameter, height, thickness, res, font_dir, font, output_path, fi
     s, ring_mesh = gen3D(vertices[:,0:2])
 
     outputname = os.path.join(output_path, filename + '.svg')
-    tag(text, os.path.join(font_dir, font), length, height, outputname, phi=None, shape = None, outline = False)
-    # cairosvg.svg2png(url=outputname, write_to=os.path.join(output_path, filename + '.png'))
+    text_tag = tag(text, os.path.join(font_dir, font), length, height, phi=None, shape = None, outline = False)
+    text_tag.generate_svg_file(outputname)
 
     # Generate text mesh
     txt_mesh = mesh_from_path(outputname, -thickness)
@@ -158,7 +157,8 @@ def ring(text, diameter, height, thickness, res, font_dir, font, output_path, fi
     if brand:
         # Generate brand mesh
         brand_width = 30
-        tag('Tetsudau', os.path.join(font_dir, 'Allison', 'Allison-Regular.ttf'), brand_width, height, os.path.join(output_path, 'brand.svg'), shape = None, outline = False)
+        brand_tag = tag('Tetsudau', os.path.join(font_dir, 'Allison', 'Allison-Regular.ttf'), brand_width, height, shape = None, outline = False)
+        brand_tag.generate_svg_file(os.path.join(output_path, 'brand.svg'))
         brand_mesh = mesh_from_path(os.path.join(output_path, 'brand.svg'), -thickness)
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = -np.pi / 2, direction = [1, 0, 0]))
         brand_mesh = brand_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 0, 1]))

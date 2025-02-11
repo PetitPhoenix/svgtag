@@ -6,7 +6,7 @@ from ..shape2svg import shape_svg
 from ..text2svg import text_svg
 from ..SVGprocess import SVG
 
-def tag(text, font_path, length, height, output, phi=None, shape='circle', outline=False):
+def tag(text, font_path, length, height, phi=None, shape='circle', outline=False):
     # Shape parameters [mm]
     zoneWidth_mm = length
     zoneHeight_mm = height
@@ -53,7 +53,8 @@ def tag(text, font_path, length, height, output, phi=None, shape='circle', outli
         svg.width = zoneWidth_mm + zoneHeight_mm / 2
         svg.viewBox = [- zoneHeight_mm / 2 , 0, zoneWidth_mm + zoneHeight_mm / 2, zoneHeight_mm]
     svg.unit = 'mm'
-    svg.generate_svg_file(output)
+    # svg.generate_svg_file(output)
+    return svg
 
 def tag_3D(filename, input_path, output_path):
     shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
