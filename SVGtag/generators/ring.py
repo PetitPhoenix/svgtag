@@ -118,7 +118,9 @@ def wrap_around(mesh):
     return mesh
 
 def mesh_from_path(pathname, thickness):
-    path = trimesh.load_path(pathname)
+    with open(pathname, 'rb') as file:
+        path = trimesh.load_path(file, file_type='svg')
+        # path = trimesh.load_path(pathname)
     # txt_path = txt_path.simplify(tolerance = 0.2)
     poly = path.polygons_full
     path = [trimesh.load_path(p.simplify(tolerance = 0.1)) for p in poly]

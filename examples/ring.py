@@ -9,7 +9,7 @@ res = 20  # max: 26
 # FONT = '../static/fonts/Impact/impact.ttf'
 font_dir = '../static/fonts'
 font = 'Mocking Bird/mocking_bird.ttf'
-text = "123456"
+text = "Mon prénom"
 
 # Define outputs
 output_path = os.path.join(os.path.dirname(__file__), 'outputs', 'ring')

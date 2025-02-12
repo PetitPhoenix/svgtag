@@ -57,19 +57,27 @@ def tag(text, font_path, length, height, phi=None, shape='circle', outline=False
     return svg
 
 def tag_3D(filename, input_path, output_path):
-    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
+    with open(os.path.join(input_path, 'shape.svg'), 'rb') as file:
+        shape_svg = trimesh.load_path(file, file_type='svg')
+    # shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
     shape_mesh = shape_svg.extrude(3)
     
-    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
+    with open(os.path.join(input_path, 'hole.svg'), 'rb') as file:
+        hole_svg = trimesh.load_path(file, file_type='svg')
+    # hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
     hole_mesh = hole_svg.extrude(3)
     
-    logo_svg = trimesh.load_path(os.path.join(input_path, 'Tetsudau_logo.svg'))
+    with open(os.path.join(input_path, 'Tetsudau_logo.svg'), 'rb') as file:
+        logo_svg = trimesh.load_path(file, file_type='svg')
+    # logo_svg = trimesh.load_path(os.path.join(input_path, 'Tetsudau_logo.svg'))
     logo_mesh = logo_svg.extrude(0.5)
     logo_mesh = trimesh.boolean.union(logo_mesh)
     logo_mesh = logo_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 1, 0]))
     logo_mesh = logo_mesh.apply_transform(trimesh.transformations.scale_and_translate(scale = [0.7, 0.7, 1], translate = [75, 10, 3]))
     
-    text_svg = trimesh.load_path(os.path.join(input_path, f'{filename}.svg'))
+    with open(os.path.join(input_path, f'{filename}.svg'), 'rb') as file:
+        text_svg = trimesh.load_path(file, file_type='svg')
+    # text_svg = trimesh.load_path(os.path.join(input_path, f'{filename}.svg'))
     text_mesh = text_svg.extrude(2)
     text_mesh = trimesh.boolean.union(text_mesh)
     
@@ -92,17 +100,25 @@ def tag_3D(filename, input_path, output_path):
     print(f"STL saved at {os.path.abspath(os.path.join(output_path, f'{filename}_X.stl'))}")
 
 def tag_3D_RV(recto, verso, input_path, output_path):
-    shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
+    with open(os.path.join(input_path, 'shape.svg'), 'rb') as file:
+        shape_svg = trimesh.load_path(file, file_type='svg')
+    # shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
     shape_mesh = shape_svg.extrude(3)
     
-    hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
+    with open(os.path.join(input_path, 'hole.svg'), 'rb') as file:
+        hole_svg = trimesh.load_path(file, file_type='svg')
+    # hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
     hole_mesh = hole_svg.extrude(3)
     
-    recto_svg = trimesh.load_path(os.path.join(input_path, f'{recto}.svg'))
+    with open(os.path.join(input_path, f'{recto}.svg'), 'rb') as file:
+        recto_svg = trimesh.load_path(file, file_type='svg')
+    # recto_svg = trimesh.load_path(os.path.join(input_path, f'{recto}.svg'))
     recto_mesh = recto_svg.extrude(1)
     recto_mesh = trimesh.boolean.union(recto_mesh)
     
-    verso_svg = trimesh.load_path(os.path.join(input_path, f'{verso}.svg'))
+    with open(os.path.join(input_path, f'{recto}.svg'), 'rb') as file:
+        verso_svg = trimesh.load_path(file, file_type='svg')
+    # verso_svg = trimesh.load_path(os.path.join(input_path, f'{verso}.svg'))
     verso_mesh = verso_svg.extrude(1)
     verso_mesh = trimesh.boolean.union(verso_mesh)
     verso_mesh = verso_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [1, 0, 0]))

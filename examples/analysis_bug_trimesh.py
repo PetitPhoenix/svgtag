@@ -31,7 +31,7 @@ def print_param(path):
 # Charger les contours SVG comme polygones
 print('Working on shape.svg')
 shape_svg = trimesh.load_path(r'./inputs/shape.svg')
-shape_svg.fill_gaps()
+shape_svg.fill_gaps(distance=0.1)
 shape_mesh = shape_svg.extrude(3)
 check(shape_mesh)
 # print_param(shape_svg)
