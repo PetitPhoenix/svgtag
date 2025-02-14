@@ -73,6 +73,7 @@ def convert_svg_with_inkscape(svg_file_path, inkscape_path, output_formats, dpi)
             output_file_path = svg_file_path.replace('.svg', f'.{fmt}')
             command = [
                 inkscape_path,
+                '--batch-process',
                 '--export-filename=' + output_file_path,
                 '--export-dpi=' + str(dpi),
                 '--export-type=' + fmt,
