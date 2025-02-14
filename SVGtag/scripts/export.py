@@ -5,7 +5,7 @@ import shutil
 import zipfile
 from PIL import Image
 
-def prepare_target_directory(svg_file_path):
+def prepare_target_directory(svg_file_path, clean = True):
     if not os.path.exists(svg_file_path):
         print(f"Le fichier spécifié n'existe pas : {svg_file_path}")
         sys.exit(1)
@@ -23,8 +23,7 @@ def prepare_target_directory(svg_file_path):
             for file in files:
                 print(f"- {file}")
             # Demander confirmation pour supprimer
-            response = input("Voulez-vous supprimer tous ces fichiers ? (y/n): ")
-            if response.lower() == 'y':
+            if clean == True:
                 # Supprimer les fichiers
                 for file in files:
                     file_path = os.path.join(target_directory, file)
@@ -45,7 +44,7 @@ def prepare_target_directory(svg_file_path):
     # Retourner le nouveau chemin du fichier SVG et le répertoire cible
     return new_svg_path
 
-def zip_subdirectory(directory):
+def zip_subdirectory(directory, clean = False):
     zip_path = os.path.join(os.path.dirname(directory), f"{os.path.basename(directory)}.zip")
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Parcourir récursivement tous les fichiers dans le sous-répertoire
@@ -56,7 +55,7 @@ def zip_subdirectory(directory):
                 # Cela permet de s'assurer que les fichiers sont ajoutés sans le préfixe du répertoire parent
                 zipf.write(file_path, arcname=os.path.relpath(file_path, start=directory))
                 print(f"Fichier ajouté au ZIP : {file_path}")
-
+    if clean == True: shutil.rmtree(directory)
     print(f"Archive ZIP créée : {zip_path}")
 
 def convert_svg_to_jpg(png_file_path):
@@ -91,7 +90,7 @@ if __name__ == '__main__':
     svg_file_path = "<chemin/vers/votre/fichier.svg>"
     output_formats = ['png', 'jpg', 'pdf', 'eps', 'dxf']
     dpi = 600
-    svg_file_path = prepare_target_directory(svg_file_path)
+    svg_file_path = prepare_target_directory(svg_file_path, clean = True)
     convert_svg_with_inkscape(svg_file_path, inkscape_path, output_formats, dpi)
     
     directory = os.path.dirname(svg_file_path)
