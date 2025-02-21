@@ -56,16 +56,79 @@ def tag(text, font_path, length, height, phi=None, shape='circle', outline=False
     # svg.generate_svg_file(output)
     return svg
 
+def svg2stl(shape, thickness, output_path, side_A, side_B = None, brand = None):
+    with open(shape, 'rb') as file:
+        shape_svg = trimesh.load_path(file, file_type='svg')
+    shape_mesh = shape_svg.extrude(thickness)
+    
+    with open(side_A, 'rb') as file:
+        side_A_svg = trimesh.load_path(file, file_type='svg')
+    side_A_mesh = side_A_svg.extrude(thickness/6)
+    side_A_mesh = trimesh.boolean.union(side_A_mesh)
+    negative = side_A_mesh.copy()
+    
+    
+    if side_B :
+        with open(side_B, 'rb') as file:
+            side_B_svg = trimesh.load_path(file, file_type='svg')
+        side_B_mesh = side_B_svg.extrude(thickness/6)
+        side_B_mesh = trimesh.boolean.union(side_B_mesh)
+        # side_B_mesh = side_B_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 1, 0]))
+        side_B_mesh = side_B_mesh.apply_transform(trimesh.transformations.rotation_matrix(angle = np.pi, direction = [1, 0, 0]))
+
+        if brand == True:
+            side_B_mesh = side_B_mesh.apply_transform(trimesh.transformations.scale_and_translate(scale = [0.4, 0.4, 1], translate = [0.4*shape_mesh.extents[0], 0.4*shape_mesh.extents[1], thickness]))#[0.6*(shape_mesh.extents[0] - side_B_mesh.extents[0]), 0.6*side_B_mesh.extents[1], thickness]))
+        else:
+            side_B_mesh = side_B_mesh.apply_transform(trimesh.transformations.scale_and_translate(scale = [1, 1, 1], translate = [0, shape_mesh.extents[1], thickness]))
+
+        negative = negative.union(side_B_mesh)
+
+    
+    mesh = trimesh.boolean.difference([shape_mesh, negative])
+    
+    material = trimesh.visual.material.SimpleMaterial(diffuse=[0.8, 0.8, 0.8], ambient=[1, 1, 1], specular=None, glossiness=1)# PBRMaterial(name="PLA")
+    shape_mesh.visual.material = material
+    side_A_mesh.visual.material = material
+    if side_B :
+        side_B_mesh.visual.material = material
+    mesh.visual.material = material
+
+    # shape_mesh.visual.face_colors = [45, 250, 250, 255]
+    side_A_mesh.visual.face_colors = [248, 248, 241, 255]
+    if side_B :
+        side_B_mesh.visual.face_colors = [248, 248, 241, 255]
+    mesh.visual.face_colors = [48, 48, 48, 255]
+    
+    scene = trimesh.Scene()
+    scene.add_geometry([mesh, side_A_mesh])
+    if side_B :
+        scene.add_geometry(side_B_mesh)
+    
+    R = trimesh.transformations.concatenate_matrices(trimesh.transformations.rotation_matrix(angle = -np.pi / 3, direction = [1, 0, 0]), 
+                                                     trimesh.transformations.rotation_matrix(angle = np.pi, direction = [0, 0, 1])
+                                                     )
+    R[0:3, 3] = [0, 3 * 75, 3 * 3]
+    scene.camera_transform = R
+    # scene.show(viewer='gl', flags={'wireframe': False, 'axis': True})
+
+    mesh.export(os.path.join(output_path, 'mesh.stl'))
+    side_A_mesh.export(os.path.join(output_path, 'side_A.stl'))
+    if side_B :
+        side_B_mesh.export(os.path.join(output_path, 'side_B.stl'))
+    print(f"STL saved at {os.path.abspath(output_path)}")
+
+    return scene
+
 def tag_3D(filename, input_path, output_path):
     with open(os.path.join(input_path, 'shape.svg'), 'rb') as file:
         shape_svg = trimesh.load_path(file, file_type='svg')
     # shape_svg = trimesh.load_path(os.path.join(input_path, 'shape.svg'))
     shape_mesh = shape_svg.extrude(3)
     
-    with open(os.path.join(input_path, 'hole.svg'), 'rb') as file:
-        hole_svg = trimesh.load_path(file, file_type='svg')
-    # hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
-    hole_mesh = hole_svg.extrude(3)
+    # with open(os.path.join(input_path, 'hole.svg'), 'rb') as file:
+    #     hole_svg = trimesh.load_path(file, file_type='svg')
+    # # hole_svg = trimesh.load_path(os.path.join(input_path, 'hole.svg'))
+    # hole_mesh = hole_svg.extrude(3)
     
     with open(os.path.join(input_path, 'Tetsudau_logo.svg'), 'rb') as file:
         logo_svg = trimesh.load_path(file, file_type='svg')
@@ -82,12 +145,11 @@ def tag_3D(filename, input_path, output_path):
     text_mesh = trimesh.boolean.union(text_mesh)
     
     scene = trimesh.Scene()
-    scene.add_geometry([shape_mesh, logo_mesh, text_mesh, hole_mesh])
+    scene.add_geometry([shape_mesh, logo_mesh, text_mesh])
     # scene.show(viewer='gl', flags={'wireframe': True, 'axis': True})
     
     negative = text_mesh.copy()
-    negative = negative.union(logo_mesh)
-    negative = negative.union(hole_mesh)
+    
     tag_mesh = trimesh.boolean.difference([shape_mesh, negative])
     
     # negative.show(viewer='gl', flags={'wireframe': True, 'axis': True})

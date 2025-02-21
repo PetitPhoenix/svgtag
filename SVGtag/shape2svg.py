@@ -24,29 +24,25 @@ def shape_svg(width, height, thk, shape, hole=0):
         svg.viewBox = [- height / 2 , 0, width + height / 2, height]
         path_d = f"M {x0} {y0} h {width} v {height} h {-width} "
         if shape == 'rectangle':
-            path_d += f"h {-height/2} v {-height} h {height/2} "
+            path_d += f"v {-height} "
         elif shape == 'circle':
             path_d += f"a {height/2} {height/2} 0 0 1 {0} {-height} "
         elif shape == 'triangle':
             path_d += f"l {-height/2} {-height/2} l {height/2} {-height/2} "
-        path_d += "z"
+        path_d += "z "
+
+        cx = -hole - thk / 2
+        cy = height / 2
+        
+        # Construction du chemin pour le trou (cercle)
+        path_d += f"M {cx} {cy} "
+        path_d += f"m {-hole / 2} 0 "
+        path_d += f"a {hole / 2} {hole / 2} 0 1 1 {hole} 0 "
+        path_d += f"a {hole / 2} {hole / 2} 0 1 1 {-hole} 0 z"
 
         # Ajout du path directement à l'objet SVG
         svg.add_element('path', {
             'd': path_d,
-            'fill': 'none',
-            'stroke': 'black',
-            'stroke-width': thk
-        })
-
-        cx = - hole - thk / 2
-        cy = height / 2
-
-        # Ajout d'un cercle directement à l'objet SVG
-        svg.add_element('circle', {
-            'cx': cx,
-            'cy': cy,
-            'r': hole / 2,
             'fill': 'none',
             'stroke': 'black',
             'stroke-width': thk
