@@ -41,6 +41,9 @@ Here are some examples of how to use the SVG Tag Generator:
 The following examples demonstrate how to use the SVG Tag Generator to create various SVG elements and perform operations such as 3D transformations and exporting to different formats.
 
 ### Generating a Tag with a Circular Shape
+
+<img src="examples/outputs/tag/tag.svg" alt="Tag" width="200"/>
+
 ```python
 from SVGtag.shape2svg import shape_svg
 
@@ -65,6 +68,9 @@ svg.generate_svg_file(svg_file_path)
 ```
 
 ### Creating a Wi-Fi QR Code with Embedded Network Details
+
+<img src="examples/outputs/wifi/wifi.png" alt="Wi-Fi QR code" width="200"/>
+
 ```python
 from SVGtag.generators.wifi import QR_gen
 
@@ -90,6 +96,9 @@ svg_instance.generate_svg_file(output_file)
 ```
 
 ### Creating a Personalized Ring with Text Engraving (for napkins ring for instance)
+
+<img src="examples/outputs/ring/Test.png" alt="Napkin ring" width="200"/>
+
 ```python
 from SVGtag.generators.ring import ring, export
 
@@ -115,6 +124,7 @@ export(mesh, style='stl', path=output_path, name=filename)
 ```
 
 ### Generating a Business Card
+
 ```python
 from SVGtag.examples.business_cards import generate_participant_cards
 
@@ -129,6 +139,7 @@ generate_participant_cards(name, title, discipline, location, 'output_directory'
 ```
 
 ### Creating a Tag
+
 ```python
 from SVGtag.examples.etiquettes_plongee import batch_tags
 
@@ -143,6 +154,7 @@ batch_tags(data)
 ```
 
 ### Exporting SVG Content
+
 ```python
 from SVGtag.SVGprocess import SVG
 
