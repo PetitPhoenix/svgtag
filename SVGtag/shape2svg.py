@@ -10,15 +10,23 @@ def shape_svg(width, height, thk, shape, hole=0):
         svg.width = width
         svg.viewBox = [0, 0, width, height]
         # Ajout d'un rectangle directement à l'objet SVG
-        svg.add_element('rect', {
-            'x': x0,
-            'y': y0,
-            'width': width,
-            'height': height,
+        # svg.add_element('rect', {
+        #     'x': x0,
+        #     'y': y0,
+        #     'width': width,
+        #     'height': height,
+        #     'fill': 'none',
+        #     'stroke': 'black',
+        #     'stroke-width': thk
+        # })
+        path_d = f"M {x0} {y0} h {width} v {height} h {-width} v {-height} z"
+        svg.add_element('path', {
+            'd': path_d,
             'fill': 'none',
             'stroke': 'black',
             'stroke-width': thk
         })
+        
     else:
         svg.width = width + height / 2
         svg.viewBox = [- height / 2 , 0, width + height / 2, height]
