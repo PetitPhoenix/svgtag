@@ -1,0 +1,5 @@
+*.svg linguist-generated=true
+*.html linguist-generated=true
+*.stl linguist-generated=true
+./examples/* linguist-vendored
+./tests/* linguist-vendored
