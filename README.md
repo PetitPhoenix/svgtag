@@ -33,10 +33,8 @@ The SVG Tag Generator consists of several modules, each tailored for specific fu
 - generators: Submodules for generating specific SVG items like rings, tags, and Wi-Fi QR codes.
 - scripts: Utility scripts for exporting SVG to different formats and batch processing.
 
-## Usage
-Here are some examples of how to use the SVG Tag Generator:
 
-## Usage Examples
+## How-To
 
 The following examples demonstrate how to use the SVG Tag Generator to create various SVG elements and perform operations such as 3D transformations and exporting to different formats.
 
