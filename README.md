@@ -27,7 +27,7 @@ The SVG Tag Generator relies on several third-party libraries to provide its fun
 
 ## Modules
 The SVG Tag Generator consists of several modules, each tailored for specific functionalities:
-- SVGprocess: Core module for creating and manipulating SVG content.
+- svgprocess: Core module for creating and manipulating SVG content.
 - shape2svg: Functions to generate SVG shapes with customizable dimensions and styles.
 - text2svg: Convert text into SVG paths using various fonts and styles.
 - generators: Submodules for generating specific SVG items like rings, tags, and Wi-Fi QR codes.
