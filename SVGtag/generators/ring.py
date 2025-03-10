@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import trimesh
 from trimesh import viewer # if not written, error in import
-from SVGtag.generators.tag import tag
+from svgtag.generators.tag import tag
 
 X = np.array([1, 0, 0])
 Y = np.array([0, 1, 0])

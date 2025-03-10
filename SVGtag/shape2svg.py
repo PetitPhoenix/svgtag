@@ -1,4 +1,4 @@
-from .SVGprocess import SVG
+from .svgprocess import SVG
 
 def shape_svg(width, height, thk, shape, hole=0):
     svg = SVG()  # Créer un nouvel objet SVG

@@ -15,8 +15,8 @@ The SVG Tag Generator is a versatile Python library designed for creating and ma
 To use the SVG Tag Generator, clone the repository to your local machine and ensure that you have Python installed. Some scripts may require additional dependencies, which can be installed using `pip`:
 
 ```bash
-git clone https://github.com/your-username/SVGtag.git
-cd SVGtag
+git clone https://github.com/PetitPhoenix/svgtag.git
+cd svgtag
 pip install -r requirements.txt
 ```
 ### Dependencies
@@ -43,7 +43,7 @@ The following examples demonstrate how to use the SVG Tag Generator to create va
 <img src="examples/outputs/tag/tag.svg" alt="Tag" width="200"/>
 
 ```python
-from SVGtag.shape2svg import shape_svg
+from svgtag.shape2svg import shape_svg
 
 # Define the dimensions and properties for the tag
 width_mm = 80
@@ -70,7 +70,7 @@ svg.generate_svg_file(svg_file_path)
 <img src="examples/outputs/wifi/wifi.png" alt="Wi-Fi QR code" width="200"/>
 
 ```python
-from SVGtag.generators.wifi import QR_gen
+from svgtag.generators.wifi import QR_gen
 
 # Define Wi-Fi network details and SVG properties
 network = 'MyNetwork'
@@ -98,7 +98,7 @@ svg_instance.generate_svg_file(output_file)
 <img src="examples/outputs/ring/Test.png" alt="Napkin ring" width="200"/>
 
 ```python
-from SVGtag.generators.ring import ring, export
+from svgtag.generators.ring import ring, export
 
 # Define the parameters for the ring
 diameter = 20  # Diameter of the ring in millimeters
@@ -124,7 +124,7 @@ export(mesh, style='stl', path=output_path, name=filename)
 ### Generating a Business Card
 
 ```python
-from SVGtag.examples.business_cards import generate_participant_cards
+from svgtag.examples.business_cards import generate_participant_cards
 
 # Define card details
 name = 'John Doe'
@@ -139,7 +139,7 @@ generate_participant_cards(name, title, discipline, location, 'output_directory'
 ### Creating a Tag
 
 ```python
-from SVGtag.examples.etiquettes_plongee import batch_tags
+from svgtag.examples.etiquettes_plongee import batch_tags
 
 # Define tag data
 data = [
@@ -154,7 +154,7 @@ batch_tags(data)
 ### Exporting SVG Content
 
 ```python
-from SVGtag.SVGprocess import SVG
+from svgtag.SVGprocess import SVG
 
 # Create an SVG instance
 svg_instance = SVG()

@@ -1,0 +1,116 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools >= 61.0", "wheel"]
+
+[project]
+name = "svgtag"
+requires-python = ">=3.8"
+version = "0.7.5"
+authors = [{name = "Stéphane Besnard", email = "stephane.c.m.besnard@gmail.com}]
+license = {file = "LICENSE.md"}
+description = "Process SVG files for generation of laser or 3D files."
+keywords = ["graphics", "laser", "mesh", "3D"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+	"Intended Audience :: Developers"
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Natural Language :: English",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling"
+]
+dependencies = ["fonttools>=4.48.1"]
+
+[project.urls]
+homepage = "https://github.com/PetitPhoenix/svgtag"
+documentation = "https://github.com/PetitPhoenix/svgtag"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+
+[tool.setuptools]
+packages = [
+    "svgtag",
+    "svgtag.generators",
+    "svgtag.scripts",
+]
+include-package-data = false
+
+# this is the base extra most users will want
+3D = [
+    "trimesh>=4.6.4",
+	"qrcode",
+]
+
+developer = [
+    "Pillow",
+    "matplotlib",
+	"pandas",
+	"numpy",
+]
+
+
+# requires pip >= 21.2
+# https://hynek.me/articles/python-recursive-optional-dependencies/
+all = ["svgtag[3D,developper]"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 90
+
+
+# See https://github.com/charliermarsh/ruff#rules for error code definitions.
+
+[tool.ruff.lint]
+select = [
+    # "ANN", # annotations
+    "B", # bugbear
+    "C", # comprehensions
+    "E", # style errors
+    "F", # flakes
+    "I", # import sorting
+    "RUF", # ruff specific rules
+    "UP", # upgrade
+    "W", # style warnings
+    "YTT", # sys.version
+    "ISC001",
+    "ISC002",
+    "NPY201",
+    "TID251"
+]
+
+ignore = [
+  "C901", # Comprehension is too complex (11 > 10)
+  "N802", # Function name should be lowercase
+  "N806", # Variable in function should be lowercase
+  "E501", # Line too long ({width} > {limit} characters)
+  "B904", # raise ... from err
+  "B905", # zip() without an explicit strict= parameter
+  "RUF005", # recommends non-type-aware expansion
+]
+
+# don't allow implicit string concatenation
+flake8-implicit-str-concat = {"allow-multiline" = false}
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"IPython.embed".msg = "you forgot to remove a debug embed ;)"
+"numpy.empty".msg = "uninitialized arrays are haunted try numpy.zeros"
+
+[tool.codespell]
+skip = "*.js*,./docs/built/*,./docs/generate/*,./models*,*.toml"
+ignore-words-list = "nd,coo,whats,bu,childs,mis,filetests"
+
+[tool.mypy]
+python_version = "3.8"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+disable_error_code = ["method-assign", "var-annotated"]

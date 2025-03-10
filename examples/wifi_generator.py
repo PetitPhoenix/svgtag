@@ -1,7 +1,7 @@
 import os
 import datetime
-from SVGtag.generators.wifi import QR_gen
-from SVGtag.scripts.export import prepare_target_directory, convert_svg_with_inkscape, zip_subdirectory
+from svgtag.generators.wifi import QR_gen
+from svgtag.scripts.export import prepare_target_directory, convert_svg_with_inkscape, zip_subdirectory
 
 # Paramètres personnels
 inkscape_path = r"C:\TOOLS\01_Portable\InkscapePortable\App\Inkscape\bin\Inkscape.exe"

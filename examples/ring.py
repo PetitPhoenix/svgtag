@@ -1,5 +1,5 @@
 import os
-from SVGtag.generators.ring import ring, export
+from svgtag.generators.ring import ring, export
     
 # Define inputs
 diameter = 50

@@ -4,7 +4,7 @@ import numpy as np
 
 from ..shape2svg import shape_svg
 from ..text2svg import text_svg
-from ..SVGprocess import SVG
+from ..svgprocess import SVG
 
 def tag(text, font_path, length, height, phi=None, shape='circle', outline=False):
     # Shape parameters [mm]
@@ -83,7 +83,6 @@ def svg2stl(shape, thickness, output_path, side_A, side_B = None, brand = None):
 
         negative = negative.union(side_B_mesh)
 
-    
     mesh = trimesh.boolean.difference([shape_mesh, negative])
     
     material = trimesh.visual.material.SimpleMaterial(diffuse=[0.8, 0.8, 0.8], ambient=[1, 1, 1], specular=None, glossiness=1)# PBRMaterial(name="PLA")

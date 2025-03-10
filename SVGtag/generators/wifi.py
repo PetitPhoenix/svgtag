@@ -1,7 +1,7 @@
 import io
 import os
 from ..text2svg import text_svg
-from ..SVGprocess import SVG, read_svg
+from ..svgprocess import SVG, read_svg
 import qrcode
 import qrcode.image.svg
 # https://github.com/lincolnloop/python-qrcode

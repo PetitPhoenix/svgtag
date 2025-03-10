@@ -7,7 +7,7 @@ svg_tag_path = os.path.join(parent_dir, 'svg_tag')
 sys.path.append(svg_tag_path)
 
 import export
-from SVGprocess import SVG, read_svg
+from svgprocess import SVG, read_svg
 from text2svg import text_svg
 
 def card_gen(text_elements, width_mm, height_mm, padding_mm, phi=None):

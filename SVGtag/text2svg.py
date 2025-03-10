@@ -1,4 +1,4 @@
-from .SVGprocess import SVG
+from .svgprocess import SVG
 from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
