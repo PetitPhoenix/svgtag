@@ -1,4 +1,1 @@
-from . import (
-    svgprocess, 
-    shape2svg, 
-    text2svg)
+from . import shape2svg, svgprocess, text2svg
