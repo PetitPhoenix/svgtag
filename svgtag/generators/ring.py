@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import trimesh
 
+from trimesh import viewer # if not written, error in import
 from svgtag.generators.tag import tag
 
 X = np.array([1, 0, 0])
@@ -88,29 +89,29 @@ def gen3D(coords, RES=20, export=0, visu=0):
     s = trimesh.Scene(mesh)
 
     if visu == 1:
-        trimesh.viewer.windowed.SceneViewer(s, start_loop=True)
+        viewer.windowed.SceneViewer(s, start_loop=True)
 
     if export == 1:
-        data = trimesh.viewer.scene_to_html(s)
+        data = viewer.scene_to_html(s)
         return s, data
     elif export == 2:
         with open("data.html", "w") as file:
-            file.write(trimesh.viewer.scene_to_html(s))
+            file.write(viewer.scene_to_html(s))
     return s, mesh
 
 
 def to_html(mesh):
-    return trimesh.viewer.scene_to_html(trimesh.Scene(mesh))
+    return viewer.scene_to_html(trimesh.Scene(mesh))
 
 
 def export(mesh, style="html", path=None, name=None):
     scene = trimesh.Scene(mesh)
     if style == "scene":
-        data = trimesh.viewer.scene_to_html(scene)
+        data = viewer.scene_to_html(scene)
         return scene, data
     elif style == "html":
         with open(os.path.join(path, name + ".html"), "w") as file:
-            file.write(trimesh.viewer.scene_to_html(scene))
+            file.write(viewer.scene_to_html(scene))
         print(f"Scene saved to '{os.path.join(path, name + '.html')}'")
     elif style == "stl":
         # trimesh.exchange.stl.export_stl(mesh)

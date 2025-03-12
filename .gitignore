@@ -2,6 +2,8 @@
 *.plt
 *.svg
 *.dxf
+*.stl
+*.html
 <<<<<<< HEAD
 *.pyc
 *.pwj

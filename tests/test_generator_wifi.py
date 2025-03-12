@@ -1,11 +1,9 @@
 import os
 import unittest
-
 import trimesh
 
-from SVGtag.generators.tag import svg2stl, tag
-from SVGtag.generators.wifi import QR_gen
-
+from svgtag.generators.tag import svg2stl, tag
+from svgtag.generators.wifi import QR_gen
 
 class TestQRCodeGeneration(unittest.TestCase):
     def setUp(self):
@@ -89,6 +87,8 @@ class TestQRCodeGeneration(unittest.TestCase):
     #     svg_instance.generate_svg_file(output_file)
     #     self.assertTrue(os.path.exists(output_file))
 
+    # Fail. Pending issue in trimesh being resolved (shapes)
+    
     def test_02_tag_3D_recto(self):
         self.font_path = os.path.abspath(
             os.path.join(

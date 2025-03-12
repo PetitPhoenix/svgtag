@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from SVGtag.text2svg import text_svg
+from svgtag.text2svg import text_svg
 
 
 class TestText2SVG(unittest.TestCase):

@@ -3,7 +3,7 @@ import unittest
 
 from PIL import Image
 
-from SVGtag.scripts.export import (
+from svgtag.scripts.export import (
     convert_svg_to_jpg,
     convert_svg_with_inkscape,
     prepare_target_directory,

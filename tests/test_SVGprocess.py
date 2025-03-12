@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from SVGtag.SVGprocess import SVG, read_svg
+from svgtag.svgprocess import SVG, read_svg
 
 
 class TestSVGprocess(unittest.TestCase):

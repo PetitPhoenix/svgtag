@@ -1,10 +1,5 @@
 import datetime
 import os
-import sys
-
-parent_dir = os.path.dirname(os.getcwd())
-svg_tag_path = os.path.join(parent_dir, "svg_tag")
-sys.path.append(svg_tag_path)
 
 import export
 from svgprocess import SVG
@@ -50,7 +45,7 @@ def card_gen(text_elements, width_mm, height_mm, padding_mm, phi=None):
         stroke_width=0.1,
     )
 
-    if phi != None:
+    if phi is not None:
         svg_instance.add_element(
             "circle",
             {
@@ -127,7 +122,7 @@ def generate_participant_cards(
     svg_instance.generate_svg_file(svg_file_path)
 
     # Outputs in different formats
-    if output_formats != None:
+    if output_formats is not None:
         inkscape_path = (
             r"C:\TOOLS\01_Portable\InkscapePortable\App\Inkscape\bin\Inkscape.exe"
         )

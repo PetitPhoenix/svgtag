@@ -1,9 +1,7 @@
 import os
 import unittest
-
-import trimesh
-
-from SVGtag.generators.tag import svg2stl, tag
+from trimesh import viewer # if not written, error in import
+from svgtag.generators.tag import svg2stl, tag
 
 
 class TestTag(unittest.TestCase):
@@ -69,7 +67,7 @@ class TestTag(unittest.TestCase):
             brand=None,
         )
         with open(os.path.join(self.output_path, "tag_3D_recto.html"), "w") as file:
-            file.write(trimesh.viewer.scene_to_html(scene))
+            file.write(viewer.scene_to_html(scene))
 
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
@@ -97,7 +95,7 @@ class TestTag(unittest.TestCase):
             brand=None,
         )
         with open(os.path.join(self.output_path, "tag_3D_recto_verso.html"), "w") as file:
-            file.write(trimesh.viewer.scene_to_html(scene))
+            file.write(viewer.scene_to_html(scene))
 
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
@@ -138,7 +136,7 @@ class TestTag(unittest.TestCase):
         with open(
             os.path.join(self.output_path, "tag_3D_recto_verso_brand.html"), "w"
         ) as file:
-            file.write(trimesh.viewer.scene_to_html(scene))
+            file.write(viewer.scene_to_html(scene))
 
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
         self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
