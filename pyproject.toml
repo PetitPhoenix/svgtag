@@ -5,7 +5,7 @@ requires = ["setuptools >= 61.0", "wheel"]
 [project]
 name = "svgtag"
 requires-python = ">=3.8"
-version = "0.7.5"
+version = "0.7.7"
 authors = [{name = "Stéphane Besnard", email = "stephane.c.m.besnard@gmail.com"}]
 license = {file = "LICENSE.md"}
 description = "Process SVG files for generation of laser or 3D files."
@@ -35,18 +35,9 @@ documentation = "https://github.com/PetitPhoenix/svgtag"
 file = "README.md"
 content-type = "text/markdown"
 
-
-[tool.setuptools]
-packages = [
-    "svgtag",
-    "svgtag.generators",
-    "svgtag.scripts",
-]
-include-package-data = false
-
-# this is the base extra most users will want
+[project.optional-dependencies]
 3D = [
-    "trimesh>=4.6.4",
+    "trimesh>=4.6.10",
 	"qrcode",
 ]
 
@@ -57,17 +48,26 @@ developer = [
 	"numpy",
 ]
 
+all = [
+    "trimesh>=4.6.10",
+	"qrcode",
+    "Pillow",
+    "matplotlib",
+	"pandas",
+	"numpy",
+]
 
-# requires pip >= 21.2
-# https://hynek.me/articles/python-recursive-optional-dependencies/
-all = ["svgtag[3D,developper]"]
+[tool.setuptools]
+packages = [
+    "svgtag",
+    "svgtag.generators",
+    "svgtag.scripts",
+]
+include-package-data = false
 
 [tool.ruff]
 target-version = "py38"
 line-length = 90
-
-
-# See https://github.com/charliermarsh/ruff#rules for error code definitions.
 
 [tool.ruff.lint]
 select = [
