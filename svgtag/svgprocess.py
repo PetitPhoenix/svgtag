@@ -110,7 +110,8 @@ class SVG:
                     {
                         "tag": tag,
                         "attributes": attributes,
-                        "transform": {"translate": final_translate, "scale": final_scale},
+                        "translate": final_translate,
+                        "scale": final_scale
                     }
                 )
             else:
@@ -136,31 +137,33 @@ class SVG:
         for element in other_svg.elements:
             self.elements.append(element)
 
-    def add_element(self, tag, attributes, transform=None):
+    def add_element(self, tag, attributes, translate=None, scale=None):
         """Ajoute un élément SVG à la liste des éléments."""
         if isinstance(attributes, dict):
-            element = {"tag": tag, "attributes": attributes, "transform": transform}
+            element = {"tag": tag, "attributes": attributes, "translate": translate, "scale": scale}
             self.elements.append(element)
         else:
             print(
                 f"Warning: Attributes for element <{tag}/> are not a dictionary. Skipping element."
             )
 
-    def add_path(self, d, translate=[0, 0], scale=1.0):
+    def add_path(self, d, translate=None, scale=None):
         """Ajoute un chemin à la liste des éléments avec transformation optionnelle."""
         element = {
             "tag": "path",
             "attributes": {"d": d},
-            "transform": {"translate": translate, "scale": scale},
+            "translate": translate,
+            "scale": scale
         }
         self.elements.append(element)
 
-    def add_group(self, elements, translate=[0, 0], scale=1.0):
+    def add_group(self, elements, translate=None, scale=None):
         """Ajoute un groupe d'éléments à la liste des éléments avec transformation optionnelle."""
         group = {
             "tag": "g",
             "elements": elements,
-            "transform": {"translate": translate, "scale": scale},
+            "translate": translate,
+            "scale": scale
         }
         self.elements.append(group)
 
@@ -216,9 +219,9 @@ class SVG:
 
         # Adjust scale and translate for each path
         for element in self.elements:
-            element["transform"]["scale"] *= scale_conversion
-            element["transform"]["translate"] = [
-                conversion_func(t) for t in element["transform"]["translate"]
+            element["scale"] *= scale_conversion
+            element["translate"] = [
+                conversion_func(t) for t in element["translate"]
             ]
 
         self.unit = target_unit
@@ -232,17 +235,18 @@ class SVG:
         """Traite un seul élément SVG pour générer sa représentation en chaîne."""
         if isinstance(element, dict):
             attributes_str = self.format_attributes(element.get("attributes", {}))
-            if element.get("transform"):
-                transform_parts = []
-                if "translate" in element["transform"]:
-                    translate = element["transform"]["translate"]
-                    transform_parts.append(f"translate({translate[0]}, {translate[1]})")
-                if "scale" in element["transform"]:
-                    scale = element["transform"]["scale"]
-                    if scale != 1:
-                        transform_parts.append(f"scale({scale})")
-                if transform_parts:
-                    attributes_str += ' transform="' + " ".join(transform_parts) + '"'
+            transform_parts = []
+            if element.get("translate"):
+                translate = element["translate"]
+                transform_parts.append(f"translate({translate[0]}, {translate[1]})")
+
+            if element.get("scale"):
+                scale = element["scale"]
+                if scale != 1:
+                    transform_parts.append(f"scale({scale})")
+            if transform_parts:
+                attributes_str += ' transform="' + " ".join(transform_parts) + '"'
+
 
             if element["tag"] == "g":
                 children_content = "".join(
@@ -322,7 +326,8 @@ def main():
 
     svg.convert_units("px")
     svg.generate_svg_file(os.path.join(output_path, "test_px.svg"))
-
+    
+    svg = SVG()
     svg.add_element(
         "rect",
         {
@@ -333,7 +338,8 @@ def main():
             "stroke": "black",
             "fill": "transparent",
         },
-        {"translate": (0, 0), "scale": 1},
+        translate=(10, 10),
+        scale=None
     )
     svg.generate_svg_file(os.path.join(output_path, "test_mm_rect.svg"))
 
