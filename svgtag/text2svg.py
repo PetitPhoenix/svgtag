@@ -5,7 +5,7 @@ from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
-from .svgprocess import SVG
+from svgtag.svgprocess import SVG
 
 
 class ContourPen(BasePen):
@@ -250,14 +250,14 @@ def flip(svg_elements, position):
     flipped_elements = []
     for element in svg_elements:
         # If the element has transformations, apply a flip
-        if "transform" not in element:
-            element["transform"] = {"translate": [0, 0], "scale": 1.0}
+        if "scale" not in element:
+            element["scale"] = 1
 
         # Add a horizontal scaling transformation (flip)
-        element["transform"]["scale"] = -1  # Invert horizontally
-        translate_x, translate_y = element["transform"].get("translate", [0, 0])
+        element["scale"] = -1  # Invert horizontally
+        translate_x, translate_y = element.get("translate", [0, 0])
         # Adjust the translation to compensation the inversion
-        element["transform"]["translate"] = [position - translate_x, translate_y]
+        element["translate"] = [position - translate_x, translate_y]
 
         flipped_elements.append(element)
 
