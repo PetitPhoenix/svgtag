@@ -1,8 +1,8 @@
 import os
 import unittest
 from trimesh import viewer # if not written, error in import
-from svgtag.generators.tag import svg2stl, tag
-
+from svgtag.generators.tag import tag_3D, tag
+from svgtag.mesh import create_scene
 
 class TestTag(unittest.TestCase):
     def setUp(self):
@@ -12,10 +12,6 @@ class TestTag(unittest.TestCase):
         )
         # Create the directory if it does not exist
         os.makedirs(self.output_path, exist_ok=True)
-        # Define the input path for the SVG files used by tag_3D and tag_3D_RV
-        self.input_path = (
-            self.output_path
-        )  # Assuming input files are in the same directory as output
         self.font_path = os.path.abspath(
             os.path.join(
                 os.path.dirname(__file__), "..", "static", "fonts", "Impact", "impact.ttf"
@@ -50,68 +46,64 @@ class TestTag(unittest.TestCase):
         self.assertTrue(os.path.exists(output_file))
 
     def test_03_tag_3D_recto(self):
-        shape = tag("", self.font_path, 80, 35, 5, shape="circle", outline=False)
-        shape.generate_svg_file(os.path.join(self.output_path, "shape.svg"))
+        shape = tag("", self.font_path, 80, 35, 5, shape="circle")
 
         text1 = "Impression d'une étiquette"
-        output_file = os.path.join(self.output_path, "tag_txt.svg")
-        svgtag = tag(text1, self.font_path, 80, 35, 0, shape=None, outline=False)
-        svgtag.generate_svg_file(output_file)
+        recto = tag(text1, self.font_path, 80, 35)
 
-        scene = svg2stl(
-            os.path.join(self.output_path, "shape.svg"),
+        mesh, side_A_mesh, _ = tag_3D(
+            [shape, recto], 
             thickness=3,
-            output_path=self.output_path,
-            side_A=os.path.join(self.output_path, "tag_txt.svg"),
-            side_B=None,
             brand=None,
+            full_export=True
         )
-        with open(os.path.join(self.output_path, "tag_3D_recto.html"), "w") as file:
+        mesh.export(os.path.join(self.output_path, 'tag_3D_recto.stl'))
+        side_A_mesh.export(os.path.join(self.output_path, 'tag_3D_recto_A.stl'))
+        
+        scene = create_scene([mesh, side_A_mesh])
+        with open(os.path.join(self.output_path, 'tag_3D_recto.html'), "w") as file:
             file.write(viewer.scene_to_html(scene))
 
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_A.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto.html")))
 
-    def test_03_tag_3D_recto_verso(self):
-        shape = tag("", self.font_path, 80, 35, 5, shape="circle", outline=False)
-        shape.generate_svg_file(os.path.join(self.output_path, "shape.svg"))
+    def test_04_tag_3D_recto_verso(self):
+        shape = tag("", self.font_path, 80, 35, 5, shape="circle")
 
         text1 = "Impression d'une étiquette"
-        output_file = os.path.join(self.output_path, "tag_txt_R.svg")
-        svgtag = tag(text1, self.font_path, 80, 35, 0, shape=None, outline=False)
-        svgtag.generate_svg_file(output_file)
+        recto = tag(text1, self.font_path, 80, 35, 0)
 
         text2 = "Recto / Verso"
-        output_file = os.path.join(self.output_path, "tag_txt_V.svg")
-        svgtag = tag(text2, self.font_path, 80, 35, 0, shape=None, outline=False)
-        svgtag.generate_svg_file(output_file)
+        verso = tag(text2, self.font_path, 80, 35, 0)
 
-        scene = svg2stl(
-            os.path.join(self.output_path, "shape.svg"),
+        mesh, side_A_mesh, side_B_mesh = tag_3D(
+            [shape, recto, verso], 
             thickness=3,
-            output_path=self.output_path,
-            side_A=os.path.join(self.output_path, "tag_txt_R.svg"),
-            side_B=os.path.join(self.output_path, "tag_txt_V.svg"),
             brand=None,
+            full_export=True
         )
-        with open(os.path.join(self.output_path, "tag_3D_recto_verso.html"), "w") as file:
+        mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso.stl'))
+        side_A_mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso_A.stl'))
+        side_B_mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso_B.stl'))
+        
+        scene = create_scene([mesh, side_A_mesh])
+        with open(os.path.join(self.output_path, 'tag_3D_recto_verso.html'), "w") as file:
             file.write(viewer.scene_to_html(scene))
 
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_B.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_A.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_B.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso.html")))
 
-    def test_03_tag_3D_recto_verso_brand(self):
+
+    def test_05_tag_3D_recto_verso_brand(self):
         shape = tag("", self.font_path, 80, 35, 5, shape="circle", outline=False)
-        shape.generate_svg_file(os.path.join(self.output_path, "shape.svg"))
 
         text1 = "Impression d'une étiquette"
-        output_file = os.path.join(self.output_path, "tag_txt_R.svg")
-        svgtag = tag(text1, self.font_path, 80, 35, 0, shape=None, outline=False)
-        svgtag.generate_svg_file(output_file)
+        recto = tag(text1, self.font_path, 80, 35, 0, shape=None, outline=False)
 
         text2 = "Tetsudau"
-        output_file = os.path.join(self.output_path, "logo.svg")
         logo_font_path = os.path.abspath(
             os.path.join(
                 os.path.dirname(__file__),
@@ -122,25 +114,26 @@ class TestTag(unittest.TestCase):
                 "Allison-Regular.ttf",
             )
         )
-        svgtag = tag(text2, logo_font_path, 80, 35, 0, shape=None, outline=False)
-        svgtag.generate_svg_file(output_file)
+        verso = tag(text2, logo_font_path, 80, 35, 0, shape=None, outline=False)
 
-        scene = svg2stl(
-            os.path.join(self.output_path, "shape.svg"),
+        mesh, side_A_mesh, side_B_mesh = tag_3D(
+            [shape, recto, verso], 
             thickness=3,
-            output_path=self.output_path,
-            side_A=os.path.join(self.output_path, "tag_txt_R.svg"),
-            side_B=os.path.join(self.output_path, "logo.svg"),
             brand=True,
+            full_export=True
         )
-        with open(
-            os.path.join(self.output_path, "tag_3D_recto_verso_brand.html"), "w"
-        ) as file:
+        mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso_brand.stl'))
+        side_A_mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso_brand_A_mesh.stl'))
+        side_B_mesh.export(os.path.join(self.output_path, 'tag_3D_recto_verso_brand_B.stl'))
+        
+        scene = create_scene([mesh, side_A_mesh])
+        with open(os.path.join(self.output_path, 'tag_3D_recto_verso_brand.html'), "w") as file:
             file.write(viewer.scene_to_html(scene))
 
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "mesh.stl")))
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_A.stl")))
-        self.assertTrue(os.path.exists(os.path.join(self.output_path, "side_B.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_brand.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_brand_A_mesh.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_brand_B.stl")))
+        self.assertTrue(os.path.exists(os.path.join(self.output_path, "tag_3D_recto_verso_brand.html")))
 
 
 if __name__ == "__main__":

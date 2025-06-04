@@ -58,8 +58,7 @@ class TestText2SVG(unittest.TestCase):
                 "stroke": "black",
                 "fill": "transparent",
                 "stroke-width": 0.1,
-            },
-            {"translate": (0, 0), "scale": 1},
+            }
         )
 
         # Générer le fichier SVG et vérifier qu'il a été créé

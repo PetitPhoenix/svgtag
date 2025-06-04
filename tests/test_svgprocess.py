@@ -44,7 +44,8 @@ class TestSVGprocess(unittest.TestCase):
                 "stroke": "black",
                 "fill": "transparent",
             },
-            {"translate": (0, 0), "scale": 1},
+            translate=(10, 0),
+            scale=None
         )
         svg_file_path_rect = os.path.join(self.output_path, "test_mm_rect.svg")
         svg.generate_svg_file(svg_file_path_rect)
