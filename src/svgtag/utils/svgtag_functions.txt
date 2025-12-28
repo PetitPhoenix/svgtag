@@ -1,0 +1,1503 @@
+ROOT: C:\TOOLS\perso\svgtag\src
+FILES FOUND: 37
+PY FILE LIST:
+  - C:\TOOLS\perso\svgtag\src\svgtag\geom\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\geom\converters.py  - C:\TOOLS\perso\svgtag\src\svgtag\geom\operations.py  - C:\TOOLS\perso\svgtag\src\svgtag\geom\shapes.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\assembly.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\extrude_old.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\extrusion.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\plate.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\ring.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\svg_helpers.py  - C:\TOOLS\perso\svgtag\src\svgtag\mesh\visualization.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\base.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\composition.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\narcose.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\ring.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\tablet.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\tag.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\wifi.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\layout.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\layouts.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\shapely_utils_old.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\tablet.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\tag.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\text.py  - C:\TOOLS\perso\svgtag\src\svgtag\svg\text2svg_self.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\__init__.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\export.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\file_cat.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\list_files.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\list_functions.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\numbers.py  - C:\TOOLS\perso\svgtag\src\svgtag\utils\visualization.py
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\geom\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\geom\converters.py
+DEFS FOUND: 3
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: to_svg_path(polygon)
+LINE: 6
+DOCSTRING:
+Convertit un Polygon Shapely en path SVG avec trous
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: to_svg(geometry, width=None, height=None)
+LINE: 30
+DOCSTRING:
+Convertit une géométrie Shapely en objet SVG
+
+Args:
+    geometry: Polygon Shapely
+    width, height: Dimensions du SVG (auto si None)
+
+Returns:
+    SVG object
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: to_mesh(geometry, thickness)
+LINE: 65
+DOCSTRING:
+Convertit une géométrie Shapely en mesh 3D
+
+Args:
+    geometry: Polygon Shapely
+    thickness: Épaisseur d'extrusion en mm
+
+Returns:
+    trimesh.Trimesh
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\geom\operations.py
+DEFS FOUND: 4
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: union(geometries)
+LINE: 6
+DOCSTRING:
+Union de plusieurs géométries
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: difference(geom_a, geom_b)
+LINE: 11
+DOCSTRING:
+Différence entre deux géométries
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: buffer_geometry(geom, distance)
+LINE: 16
+DOCSTRING:
+Buffer (offset) d'une géométrie
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: validate(geom)
+LINE: 21
+DOCSTRING:
+Valide et répare une géométrie si nécessaire
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\geom\shapes.py
+DEFS FOUND: 8
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: rectangle(width, height, x=0, y=0)
+LINE: 7
+DOCSTRING:
+Crée un rectangle
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: circle(radius, center_x=0, center_y=0, num_points=64)
+LINE: 15
+DOCSTRING:
+Crée un cercle
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: rounded_rectangle(width, height, corner_radius, x=0, y=0)
+LINE: 20
+DOCSTRING:
+Rectangle avec coins arrondis
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: add_hole(geometry, hole_diameter, hole_x, hole_y)
+LINE: 26
+DOCSTRING:
+Ajoute un trou à une géométrie
+
+Args:
+    geometry: Polygon Shapely
+    hole_diameter: Diamètre du trou
+    hole_x, hole_y: Position du centre du trou
+
+Returns:
+    Polygon avec trou
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_circle(width, height)
+LINE: 44
+DOCSTRING:
+Tag avec forme circulaire à gauche (demi-cercle + rectangle)
+
+Args:
+    width: Largeur du rectangle principal
+    height: Hauteur totale
+
+Returns:
+    Polygon Shapely
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_rectangle(width, height, corner_radius=0)
+LINE: 70
+DOCSTRING:
+Tag rectangulaire simple
+
+Args:
+    width: Largeur
+    height: Hauteur
+    corner_radius: Rayon des coins arrondis (0 = coins carrés)
+
+Returns:
+    Polygon Shapely
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_triangle(width, height, side='left')
+LINE: 86
+DOCSTRING:
+Tag avec triangle pointu
+
+Args:
+    width: Largeur du rectangle principal
+    height: Hauteur totale
+    side: 'left' ou 'right' - côté où se trouve la pointe
+
+Returns:
+    Polygon Shapely
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tablet_with_ear(width, height, padding, eyelet_outer_diameter, eyelet_hole_diameter, ear_offset=[0, 0])
+LINE: 121
+DOCSTRING:
+Plaque avec oreille (rectangle coins arrondis + œillet)
+
+Args:
+    width, height: Dimensions de la plaque (rectangle principal)
+    padding: Rayon des coins arrondis
+    eyelet_outer_diameter: Diamètre extérieur de l'œillet
+    eyelet_hole_diameter: Diamètre du trou central
+    ear_offset: [offset_x, offset_y] en mm depuis le coin bas-gauche
+               [0, 0] = oreille centrée sur le coin (dépasse de radius)
+               [-5, -5] = oreille décalée vers extérieur
+               [5, 5] = oreille décalée vers intérieur
+
+Returns:
+    Polygon Shapely
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\assembly.py
+DEFS FOUND: 3
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: assemble_plate(shape_mesh, face_meshes)
+LINE: 7
+DOCSTRING:
+Assemble a plate by subtracting face meshes from shape.
+
+Args:
+    shape_mesh: Base shape mesh
+    face_meshes: List of face meshes to subtract
+
+Returns:
+    Final plate mesh
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: create_scene(meshes, colors=None, camera_distance=75)
+LINE: 62
+DOCSTRING:
+Create a trimesh Scene with meshes and colors.
+
+Args:
+    meshes: List of trimesh meshes [plate, face_A, face_B, ...]
+    colors: List of RGB colors [[48,48,48], [248,248,241], ...]
+    camera_distance: Camera distance multiplier
+
+Returns:
+    trimesh.Scene
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: export_stl(meshes, output_path, names=['mesh.stl', 'side_A.stl', 'side_B.stl'])
+LINE: 110
+DOCSTRING:
+Export meshes to STL files.
+
+Args:
+    meshes: List of meshes
+    output_path: Output directory
+    names: List of filenames
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\extrude_old.py
+DEFS FOUND: 4
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: load_svg(svg)
+LINE: 6
+DOCSTRING:
+Charge un SVG et le convertit en path 2D trimesh.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: extrude(path, thickness)
+LINE: 12
+DOCSTRING:
+Extrude un path 2D en mesh 3D.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: extrude_poly(path, thickness)
+LINE: 20
+DOCSTRING:
+Extrude un path 2D complexe (avec polygones) en mesh 3D.
+Simplifie les polygones avant extrusion.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: clean_mesh(mesh)
+LINE: 38
+DOCSTRING:
+Nettoie un mesh pour le rendre utilisable dans les opérations booléennes.
+Répare les faces dégénérées et rend le mesh watertight si possible.
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\extrusion.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: extrude_path(path2d, thickness)
+LINE: 8
+DOCSTRING:
+Extrude a 2D path to create a 3D mesh.
+
+Args:
+    path2d: trimesh.path.Path2D object
+    thickness: Extrusion thickness in mm
+
+Returns:
+    trimesh.Trimesh
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: svg_to_path2d(svg, prepare=True)
+LINE: 33
+DOCSTRING:
+Convert SVG object to trimesh Path2D.
+
+Args:
+    svg: SVG object
+    prepare: If True, prepare angles for trimesh
+
+Returns:
+    trimesh.path.Path2D
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\plate.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: svg_to_stl(shape, thickness, output_path, side_A, side_B=None, brand=None)
+LINE: 8
+DOCSTRING:
+Convertit des SVG en STL pour plaques multi-couleurs.
+
+Args:
+    shape: Chemin vers SVG de la forme de base
+    thickness: Épaisseur en mm (ex: 3)
+    output_path: Dossier de sortie
+    side_A: Chemin vers SVG du texte face A (recto)
+    side_B: Chemin vers SVG du texte face B (verso) - optionnel
+    brand: Si True, traite side_B comme un petit logo
+
+Returns:
+    scene: Scène trimesh
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\ring.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: wrap_around(mesh)
+LINE: 1
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: mesh_from_path(pathname, thickness)
+LINE: 12
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\svg_helpers.py
+DEFS FOUND: 6
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: convert_angle_for_trimesh(angle_svg)
+LINE: 10
+DOCSTRING:
+Convert SVG angle to trimesh angle.
+
+Args:
+    angle_svg: Angle in degrees (standard SVG)
+
+Returns:
+    Angle for trimesh (degrees, scaled by 1/3300)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: prepare_for_trimesh_angles(svg)
+LINE: 23
+DOCSTRING:
+Prepare SVG for trimesh by converting rotation angles.
+
+Args:
+    svg: SVG object
+
+Returns:
+    New SVG object with converted angles
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: prepare_face_A(svg)
+LINE: 91
+DOCSTRING:
+Prepare SVG for face A (recto).
+- Convert rotation angles for trimesh
+
+Args:
+    svg: SVG object
+
+Returns:
+    Prepared SVG object
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: prepare_face_B_extrusion(svg)
+LINE: 105
+DOCSTRING:
+Prepare SVG for face B extrusion (shapes must be flipped).
+- Convert rotation angles for trimesh
+- Flip vertically for correct extrusion direction
+
+Args:
+    svg: SVG object
+
+Returns:
+    Prepared SVG object
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: prepare_face_B_visual(svg)
+LINE: 123
+DOCSTRING:
+Prepare SVG for face B visualization (as seen from back).
+- Just flip vertically
+- No angle conversion (for SVG export/preview only)
+
+Args:
+    svg: SVG object
+
+Returns:
+    Flipped SVG object
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: svg_to_tempfile(svg)
+LINE: 138
+DOCSTRING:
+Save SVG object to a temporary file and return the path.
+
+Args:
+    svg: SVG object
+
+Returns:
+    Path to temporary file (caller must delete it)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\mesh\visualization.py
+DEFS FOUND: 3
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: html(mesh)
+LINE: 6
+DOCSTRING:
+Convertit un mesh en HTML interactif.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: create_scene(meshes)
+LINE: 11
+DOCSTRING:
+Crée une scène trimesh avec matériaux et couleurs.
+
+Args:
+    meshes: Liste de meshes [base_noire, texte_blanc_1, texte_blanc_2, ...]
+
+Returns:
+    scene: Scène trimesh prête à afficher
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: export_html(scene, filepath)
+LINE: 45
+DOCSTRING:
+Exporte une scène en HTML.
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\base.py
+DEFS FOUND: 26
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: read_svg(file_path)
+LINE: 5
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: save_svg(svg_content, file_path)
+LINE: 10
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.__init__(self, content='', ppi=96)
+LINE: 16
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.parse_svg(self)
+LINE: 28
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.parse_element_attributes(self, attrs_string)
+LINE: 33
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.create_empty_copy(self)
+LINE: 42
+DOCSTRING:
+Create an empty SVG with same dimensions but no elements.
+
+Returns:
+    New empty SVG with copied dimensions
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.extract_header(self)
+LINE: 56
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.extract_dimensions(self)
+LINE: 61
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.extract_elements_and_transforms(self, content, parent_translate=[0.0, 0.0], parent_scale=1.0, parent_rotation=None, parent_rotation_center=None)
+LINE: 84
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.extract_and_add_elements(self, tag, content, parent_translate, parent_scale, parent_rotation, parent_rotation_center)
+LINE: 111
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.extract_transform_details(self, transform_string)
+LINE: 141
+DOCSTRING:
+Extract transformation details from a transform string.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.add_svg(self, other_svg)
+LINE: 164
+DOCSTRING:
+Add elements from another SVG object to this one.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.add_element(self, tag, attributes, translate=None, scale=None, rotation=None, rotation_center=None)
+LINE: 169
+DOCSTRING:
+Add an SVG element to the elements list.
+
+Args:
+    tag: SVG element type
+    attributes: Dictionary of attributes
+    translate: Translation [x, y]
+    scale: Scale factor
+    rotation: Rotation angle in degrees
+    rotation_center: Rotation center [cx, cy]
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.add_path(self, d, translate=None, scale=None, rotation=None, rotation_center=None)
+LINE: 196
+DOCSTRING:
+Add a path to the elements list with optional transformation.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.add_group(self, elements, translate=None, scale=None, rotation=None, rotation_center=None)
+LINE: 208
+DOCSTRING:
+Add a group of elements to the elements list with optional transformation.
+
+Args:
+    elements: List of elements to group
+    translate: Translation [x, y]
+    scale: Scale factor
+    rotation: Rotation angle in degrees
+    rotation_center: Rotation center [cx, cy] (optional)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.add_rectangle(self, x, y, width, height, stroke='black', fill='none', radius='0', stroke_width=0.1)
+LINE: 229
+DOCSTRING:
+Add a rectangle to the elements list.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.convert_units(self, target_unit)
+LINE: 254
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.format_attributes(self, attributes)
+LINE: 295
+DOCSTRING:
+Format element attributes as a string for inclusion in markup.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.process_element(self, element)
+LINE: 299
+DOCSTRING:
+Process a single SVG element to generate its string representation.
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.update_svg_content(self)
+LINE: 346
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.flip(self, axis='vertical', center=None)
+LINE: 384
+DOCSTRING:
+Flip the entire SVG content around an axis.
+
+Args:
+    axis: 'vertical' (flip left↔right) or 'horizontal' (flip top↔bottom)
+    center: (cx, cy) tuple for flip axis position, or None to auto-calculate from viewBox
+
+Returns:
+    New SVG with flipped content
+
+Examples:
+    svg.flip('vertical')  # Flip left↔right (mirror around vertical axis)
+    svg.flip('horizontal')  # Flip top↔bottom (mirror around horizontal axis)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.flip_element(self, element_index, axis='horizontal', center=None)
+LINE: 460
+DOCSTRING:
+Flip a specific element around an axis.
+
+Args:
+    element_index: Index of element to flip (supports negative indexing)
+    axis: 'vertical' (flip left↔right) or 'horizontal' (flip top↔bottom)
+    center: (cx, cy) tuple for flip axis position, or None to auto-calculate from viewBox
+
+Returns:
+    New SVG with element flipped
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.px_to_mm(self, px)
+LINE: 532
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.mm_to_px(self, mm)
+LINE: 535
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: SVG.generate_svg_file(self, output_file)
+LINE: 538
+DOCSTRING:
+Generate an SVG file from the current SVG instance.
+
+Args:
+    output_file (str): Path to the output file.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: main()
+LINE: 551
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\composition.py
+DEFS FOUND: 3
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: add_text_zone(svg, text, font_path, zone, rotation=0, interline_ratio=0.8, outline=False, n=None, text_scale=1.0)
+LINE: 6
+DOCSTRING:
+Add text to a zone with optional rotation and scaling.
+   
+   Args:
+       svg: SVG object to add text to
+       text: Text content (supports 
+for manual line breaks)
+       font_path: Path to TTF font file
+       zone: PrintableArea or tuple (x, y, width, height)
+       rotation: Rotation angle in degrees (overridden by zone.rotation if present)
+       interline_ratio: Line spacing ratio
+       outline: Whether to add debug outline
+       n: Number of lines (None = auto, integer = force)
+       text_scale: Scale factor for text size (0.5 = 50%, 1.0 = 100%, 2.0 = 200%)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: add_outline(svg, zone, color='red', stroke_width=0.2)
+LINE: 76
+DOCSTRING:
+Add debug rectangle outline
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: add_border_outline(svg, zone, border, color='blue', stroke_width=0.2)
+LINE: 94
+DOCSTRING:
+Add debug outline with border offset (expands outside the zone).
+
+Args:
+    svg: SVG object
+    zone: PrintableArea or (x, y, w, h) tuple
+    border: Border width in mm (positive = expands outward)
+    color: Stroke color
+    stroke_width: Line width
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\narcose.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: narcose_svg(chaines, font_path, width=80, height=129, padding=3, eyelet_outer_diameter=18, eyelet_hole_diameter=8, ear_offset=[5, 5], vertical_text_size=5, outline=False)
+LINE: 9
+DOCSTRING:
+Génère un SVG de plaque de test de narcose.
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\ring.py
+DEFS FOUND: 8
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: plot(data)
+LINE: 15
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: circle(height, R_out, R_ins, side, RES)
+LINE: 29
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: ellipse(height, R_out, R_ins, side, RES)
+LINE: 50
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: contour(HEIGHT, R_ext, R_med, R_int, RES, shape)
+LINE: 70
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: gen3D(coords, RES=20, export=0, visu=0)
+LINE: 86
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: to_html(mesh)
+LINE: 103
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: export(mesh, style='html', path=None, name=None)
+LINE: 107
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: ring(text, diameter, height, thickness, res, font_dir, font, output_path, filename, shape=1, brand=True, vis=False)
+LINE: 128
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\tablet.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tablet_svg(text, font_path, width=80, height=129, padding=3, eyelet_outer_diameter=18, eyelet_hole_diameter=8, ear_offset=[0, 0], text_rotation=0, outline=False)
+LINE: 6
+DOCSTRING:
+Génère un SVG de tablette avec oreille.
+
+Args:
+    text: Texte principal à afficher
+    font_path: Chemin vers la police
+    width: Largeur du rectangle principal en mm
+    height: Hauteur du rectangle principal en mm
+    padding: Rayon des coins arrondis en mm
+    eyelet_outer_diameter: Diamètre extérieur de l'œillet en mm
+    eyelet_hole_diameter: Diamètre du trou de l'œillet en mm
+    ear_offset: [offset_x, offset_y] position du centre de l'oreille en mm
+    text_rotation: Angle de rotation du texte (0, 90, 180, 270)
+    outline: Afficher les bordures de debug
+
+Returns:
+    SVG object
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\tag.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_svg(text, font_path, length, height, phi=None, shape=None, outline=False)
+LINE: 7
+DOCSTRING:
+Génère un SVG de tag classique.
+
+Args:
+    text: Texte à afficher
+    font_path: Chemin vers la police
+    length: Largeur en mm
+    height: Hauteur en mm
+    phi: Diamètre du trou (None = pas de trou)
+    shape: "circle", "rectangle", "triangle", ou None
+    outline: Afficher les bordures de debug
+
+Returns:
+    SVG object
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\generators\wifi.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: QR_svg(network, password, protocol, hidden, box_size=10, border=0)
+LINE: 13
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: QR_gen(network, password, protocol, hidden, text_elements, width_mm, height_mm, padding_mm, static_files_path)
+LINE: 42
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\layout.py
+DEFS FOUND: 6
+
+----------------------------------------------------------------------------------------------------
+METHOD: PrintableArea.as_tuple(self)
+LINE: 16
+DOCSTRING:
+Returns (x, y, width, height) for compatibility
+
+----------------------------------------------------------------------------------------------------
+METHOD: Layout.__init__(self, canvas_width, canvas_height, padding=0)
+LINE: 24
+DOCSTRING:
+Initialize a layout.
+
+Args:
+    canvas_width: Total canvas width in mm
+    canvas_height: Total canvas height in mm
+    padding: Padding around edges in mm
+
+----------------------------------------------------------------------------------------------------
+METHOD: Layout.add_area(self, name, x, y, width, height, rotation=0, unit='ratio')
+LINE: 38
+DOCSTRING:
+Add a printable area.
+
+Args:
+    name: Unique identifier for this area
+    x, y: Position (ratio 0-1 or absolute mm)
+    width, height: Size (ratio 0-1 or absolute mm)
+    rotation: Rotation angle (0, 90, 180, 270)
+    unit: 'ratio' for percentages (0-1), 'mm' for absolute values
+
+Example:
+    # Half width, quarter height at top-left
+    layout.add_area('header', 0, 0, 0.5, 0.25, unit='ratio')
+    
+    # 20mm x 30mm at position (10, 15)
+    layout.add_area('logo', 10, 15, 20, 30, unit='mm')
+
+----------------------------------------------------------------------------------------------------
+METHOD: Layout.get_area(self, name)
+LINE: 86
+DOCSTRING:
+Get a printable area by name
+
+----------------------------------------------------------------------------------------------------
+METHOD: Layout.list_areas(self)
+LINE: 90
+DOCSTRING:
+List all area names
+
+----------------------------------------------------------------------------------------------------
+METHOD: Layout.__repr__(self)
+LINE: 94
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\layouts.py
+DEFS FOUND: 6
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tablet_simple_layout(width, height, padding=3)
+LINE: 6
+DOCSTRING:
+Simple tablet layout with one main text area.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: narcose_layout(width, height, padding=3, title_ratio=0.12, side_ratio=0.12)
+LINE: 13
+DOCSTRING:
+Narcose test plate layout with title, side text, and main text area.
+
+Layout structure:
+- Title: top strip (12% of height by default)
+- Side text: left column (12% of width by default)  
+- Main text: remaining area for numbers (bottom-right)
+- Main: full area (for brand positioning)
+
+Args:
+    width: Total width in mm
+    height: Total height in mm
+    padding: Border padding in mm
+    title_ratio: Title height as ratio of total height
+    side_ratio: Side text width as ratio of total width
+
+Returns:
+    Layout with 'title', 'side_text', 'main_text', 'main' areas
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_layout(length, height, has_ear=False, border=3, viewbox_minx=0, viewbox_miny=0)
+LINE: 56
+DOCSTRING:
+Tag layout with main text area.
+
+Args:
+    length: Tag length in mm (zone de texte uniquement)
+    height: Tag height in mm
+    has_ear: True si le tag a une oreille/zone pour trou à gauche
+    border: Text border in mm
+    viewbox_minx: ViewBox min X (pour coordonnées absolues)
+    viewbox_miny: ViewBox min Y (pour coordonnées absolues)
+
+Returns:
+    Layout with 'main' area
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: brand_layout_auto(main_area, text, font_path, brand_position='bottom-right', brand_width_scale=0.35, border=0, flip_axis=None, n=None)
+LINE: 101
+DOCSTRING:
+Create brand layout with auto-calculated dimensions based on actual text size.
+
+Args:
+    main_area: Main printable area
+    text: Brand text
+    font_path: Font path
+    brand_position: Position within main area
+    brand_width_scale: Maximum width as fraction of main area width
+    border: Border around brand
+    flip_axis: Flip axis for verso positioning
+    n: Line count override for text
+
+Returns:
+    (Layout, text_width, text_height)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: brand_layout(main_area, brand_position='bottom-right', brand_scale=0.4, border=3, flip_axis=None)
+LINE: 180
+DOCSTRING:
+Brand layout - small logo zone INSIDE a main area.
+
+Args:
+    main_area: PrintableArea of the main zone (from tag or tablet layout)
+    brand_position: Position within main area
+    brand_scale: Scale factor relative to main area
+    border: Border margin in mm
+    flip_axis: 'horizontal' or 'vertical' if for verso
+
+Returns:
+    Layout with 'brand' area
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: wifi_qr_layout(width, height, padding=5)
+LINE: 251
+DOCSTRING:
+WiFi QR code card layout with text fields and QR zone.
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\shapely_utils_old.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: polygon_to_svg_path(polygon)
+LINE: 5
+DOCSTRING:
+Convertit un Polygon Shapely en path SVG
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: shapely_to_svg(geometry, width, height)
+LINE: 22
+DOCSTRING:
+Convertit une géométrie Shapely en SVG
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\tablet.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tablet_svg(width=80, height=129, padding=3, eyelet_outer_diameter=18, eyelet_hole_diameter=8, ear_offset=None, layout_type='simple', corner_radius=3)
+LINE: 7
+DOCSTRING:
+Create a tablet SVG with defined printable areas.
+
+Args:
+    width, height: Tablet dimensions in mm
+    padding: Edge padding in mm
+    eyelet_outer_diameter: Outer diameter of eyelet in mm
+    eyelet_hole_diameter: Hole diameter in mm
+    ear_offset: [x, y] position of ear center (None = top-left [5, 5])
+    layout_type: 'simple', 'narcose', or custom Layout object
+    corner_radius: Corner radius in mm
+
+Returns:
+    (svg, layout): SVG object with shape, Layout object with printable areas
+
+Example:
+    >>> svg, layout = tablet_svg(width=80, height=129, layout_type='narcose')
+    >>> # svg contains the tablet shape
+    >>> # layout.get_area('vertical_text') → PrintableArea for text
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes\tag.py
+DEFS FOUND: 4
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: _create_tag_svg(geom, length, height, has_ear, border)
+LINE: 7
+DOCSTRING:
+Create SVG from tag geometry.
+Uses geometry bounds for viewBox.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_circle_svg(length=80, height=35, hole_diameter=6, border=3)
+LINE: 40
+DOCSTRING:
+Create a circular tag SVG.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_rectangle_svg(length=80, height=35, hole_diameter=6, border=3, corner_radius=3)
+LINE: 53
+DOCSTRING:
+Create a rectangular tag SVG.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_triangle_svg(length=80, height=35, hole_diameter=6, border=3)
+LINE: 68
+DOCSTRING:
+Create a triangular tag SVG.
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\shapes.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: tag_svg(width, height, thk, shape=None, hole=None)
+LINE: 4
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: narcose_shape_svg(largeur=80, hauteur=129, diametre_trou=8, rayon_arrondi_oeil=5, rayon_coin=3, thk=0.1)
+LINE: 53
+DOCSTRING:
+Génère la forme: plaque à coins arrondis + oreille ronde en haut-gauche + trou centré.
+- largeur/hauteur = dimensions TOTALES incluant l'oreille (comme sur ton image 2)
+- diametre_trou = diamètre du trou
+- rayon_arrondi_oeil = marge autour du trou => rayon externe de l'oreille = r_trou + rayon_arrondi_oeil
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\text.py
+DEFS FOUND: 16
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen.__init__(self, glyphSet)
+LINE: 12
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._moveTo(self, p)
+LINE: 16
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._lineTo(self, p)
+LINE: 19
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._curveToOne(self, p1, p2, p3)
+LINE: 22
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._closePath(self)
+LINE: 25
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._endPath(self)
+LINE: 28
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_text_width(text, font)
+LINE: 32
+DOCSTRING:
+Computes the width of a text based on a specified font.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_text_height(text, font)
+LINE: 52
+DOCSTRING:
+Computes the height of a text based on a specified font.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_interline(font, scale, interline_ratio)
+LINE: 75
+DOCSTRING:
+Compute the specified spacing between two lines.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_line_metrics(text, font, scale)
+LINE: 85
+DOCSTRING:
+Compute the metrics for a line of text.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: draw_text_line(text, x, y, font, font_size, scale)
+LINE: 100
+DOCSTRING:
+Define the SVG elements of a text
+
+Args:
+    text: Text to draw.
+    x, y: Initial position for the text.
+    font_size: Font size.
+    scale: Convertion from unitsPerEm in mm.
+
+Returns:
+    List of dictionaries, each one representing a SVG element `<path>`.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: split_text(text, n)
+LINE: 141
+DOCSTRING:
+Split the text in several (n) lines, balancing line lengths.
+    Respects manual line breaks (
+).
+    
+    Args:
+        text: Text to split (may contain 
+ for manual breaks)
+        n: Target number of lines
+    
+    Returns:
+        List of text lines
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: shape_text(text, font, zone_width, zone_height, scale, interline_ratio=0.8, n=None)
+LINE: 193
+DOCSTRING:
+Determines text shape (number of lines, font size reduction).
+
+Args:
+    text: Text to shape
+    font: TTFont object
+    zone_width, zone_height: Available space in mm
+    scale: Initial scale factor
+    interline_ratio: Line spacing ratio
+    n: Optional forced number of lines (None = auto, integer = force N lines)
+
+Returns:
+    (text_lines, n, new_scale): Split text, final line count, optimized scale
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interline_ratio=0.8, n=None)
+LINE: 291
+DOCSTRING:
+Generate SVG for text fitted in a dedicated area.
+
+Args:
+    text: Text to render
+    font_path: Path to TTF font file
+    font_size: Fixed font size in mm (None = auto-optimize)
+    zone_width, zone_height: Available space in mm
+    x0, y0: Top-left corner of text zone
+    interline_ratio: Line spacing ratio (default 0.8)
+    n: Optional forced number of lines (None = auto, integer = force N lines)
+
+Returns:
+    SVG object with rendered text
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: flip(svg_elements, position)
+LINE: 365
+DOCSTRING:
+Flip SVG elements horizontally around a position.
+
+Args:
+    svg_elements: List of SVG element dictionaries
+    position: X position to flip around
+
+Returns:
+    List of flipped SVG elements
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: get_text_dimensions(text, font_path, max_width, max_height, n=None)
+LINE: 390
+DOCSTRING:
+Calculate actual dimensions of rendered text using font metrics.
+
+Args:
+    text: Text to render
+    font_path: Path to font file
+    max_width: Maximum width available
+    max_height: Maximum height available
+    n: Line count override
+
+Returns:
+    (width, height) of the actual text bounding box
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\svg\text2svg_self.py
+DEFS FOUND: 17
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen.__init__(self, glyphSet)
+LINE: 11
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._moveTo(self, p)
+LINE: 15
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._lineTo(self, p)
+LINE: 18
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._curveToOne(self, p1, p2, p3)
+LINE: 21
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._closePath(self)
+LINE: 24
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+METHOD: ContourPen._endPath(self)
+LINE: 27
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_text_width(text, font)
+LINE: 31
+DOCSTRING:
+Computes the width of a text based on a specified font.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_text_height(text, font)
+LINE: 51
+DOCSTRING:
+Computes the height of a text based on a specified font.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_interline(font, scale, interline_ratio)
+LINE: 74
+DOCSTRING:
+Compute the specified spacing between two lines.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: calculate_line_metrics(text, font, scale)
+LINE: 84
+DOCSTRING:
+Compute the metrics for a line of text.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: draw_text_line(text, x, y, font, font_size, scale)
+LINE: 99
+DOCSTRING:
+Draw the SVG of a text.
+
+Args:
+    text: A list of SVG element strings or a single SVG element string.
+    x, y: position for the text.
+    font_size: font size
+    scale: conversion from PerEm to mm.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: split_text(text, n)
+LINE: 136
+DOCSTRING:
+Split the text in several (n) lines.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: shape_text(text, font, font_size, zone_width, zone_height, scale, interline_ratio=0.8, n=[])
+LINE: 161
+DOCSTRING:
+Defines the shape of the text (number of lines, reduces font size).
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: text_svg(text, font_path, font_size, zone_width, zone_height, x0, y0, interline_ratio=0.8, n=[])
+LINE: 208
+DOCSTRING:
+General procedure that tries to fit the text in a dedicated area.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: flip(svg_elements, position)
+LINE: 260
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: generate_svg(svg_elements, output_file, loc_vis, loc_print=[])
+LINE: 270
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: main()
+LINE: 299
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\__init__.py
+DEFS FOUND: 0
+(no top-level functions or class methods found)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\export.py
+DEFS FOUND: 4
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: prepare_target_directory(svg_file_path, clean=True)
+LINE: 10
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: zip_subdirectory(directory, clean=False)
+LINE: 50
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: convert_svg_to_jpg(png_file_path)
+LINE: 68
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: convert_svg_with_inkscape(svg_file_path, inkscape_path, output_formats, dpi)
+LINE: 75
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\file_cat.py
+DEFS FOUND: 1
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: concatener_contenus(repertoire, fichier_sortie)
+LINE: 4
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\list_files.py
+DEFS FOUND: 3
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: iter_children(path, excludes)
+LINE: 25
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: print_tree(root, excludes, max_depth)
+LINE: 37
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: main()
+LINE: 60
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\list_functions.py
+DEFS FOUND: 5
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: safe_read(path)
+LINE: 14
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: fmt_default(expr)
+LINE: 17
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: fmt_signature(args)
+LINE: 25
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: collect_defs(tree)
+LINE: 69
+DOCSTRING:
+Returns list of tuples: (kind, qualname, lineno, signature, docstring)
+kind: "function" or "method"
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: main()
+LINE: 87
+DOCSTRING:
+(none)
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\numbers.py
+DEFS FOUND: 2
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: generate_random_numbers(n, length, repetition_prob=0.2, seed=None)
+LINE: 5
+DOCSTRING:
+Génère n chaînes de chiffres aléatoires avec répétitions possibles.
+
+Args:
+    n: Nombre de chaînes à générer
+    length: Longueur de chaque chaîne (nombre de chiffres)
+    repetition_prob: Probabilité d'avoir des répétitions (0.0 à 1.0)
+    seed: Graine aléatoire pour reproductibilité
+
+Returns:
+    Liste de n chaînes de chiffres
+
+Example:
+    >>> generate_random_numbers(10, 10, repetition_prob=0.2, seed=42)
+    ['8373615377', '6597306256', ...]
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: generate_test_set(difficulty='moyen', n=10, seed=None)
+LINE: 41
+DOCSTRING:
+Génère un jeu de 10 chaînes pour test selon la difficulté.
+
+Args:
+    difficulty: 'facile', 'moyen', 'difficile'
+    n: Nombre de chaînes à renvoyer
+    seed: Graine aléatoire pour reproductibilité
+
+Returns:
+    Liste de n chaînes
+
+Example:
+    >>> generate_narcosis_test_set('facile', seed=42)
+    ['837361', '659730', ...]
+
+====================================================================================================
+FILE: C:\TOOLS\perso\svgtag\src\svgtag\utils\visualization.py
+DEFS FOUND: 7
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: text_to_image(text, font_filepath, size, color, title)
+LINE: 13
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: random_coordinates(width, height, existing_coordinates, image)
+LINE: 29
+DOCSTRING:
+Generate random x, y coordinates within the given dimensions,
+making sure they do not overlap with any existing coordinates.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: place_images(images, background_path)
+LINE: 45
+DOCSTRING:
+Paste the given images onto the background, with or without overlap.
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: gen_table(data, font_title=[], text=[], width=2 ** 10)
+LINE: 59
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: display_images(images, columns=3, width=15, height=50, max_images=30, label_wrap_length=50, label_font_size=20, title='')
+LINE: 106
+DOCSTRING:
+(none)
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: make_space_above(axes, topmargin=1)
+LINE: 148
+DOCSTRING:
+increase figure size to make topmargin (in inches) space for
+titles, without changing the axes sizes
+
+----------------------------------------------------------------------------------------------------
+FUNCTION: main()
+LINE: 160
+DOCSTRING:
+(none)

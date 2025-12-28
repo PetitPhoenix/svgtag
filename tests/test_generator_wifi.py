@@ -2,8 +2,8 @@ import os
 import unittest
 import trimesh
 
-from svgtag.generators.tag import svg2stl, tag
-from svgtag.generators.wifi import QR_gen
+from svg.generators.tag import svg2stl, tag
+from svg.generators.wifi import QR_gen
 
 class TestQRCodeGeneration(unittest.TestCase):
     def setUp(self):

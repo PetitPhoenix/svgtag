@@ -1,170 +1,159 @@
-# SVG Tag Generator
+# SVGTag - SVG Tag & Label Generator
 
-The SVG Tag Generator is a versatile Python library designed for creating and manipulating SVG (Scalable Vector Graphics) files. It provides a range of functionalities to generate business cards, diving tags, rings, Wi-Fi QR codes, and more, with customizable text and design elements.
+A versatile Python library for creating customizable SVG tags, labels, and 3D printable objects with text engraving. Perfect for diving equipment tags, nameplates, organizational labels, and more.
 
-## Features
+## ✨ What Can You Create?
 
-- Generate SVG files for various use cases, including business cards, diving tags, and rings.
-- Convert SVG content to multiple formats such as PNG, JPG, PDF, EPS, and DXF.
-- Create Wi-Fi QR codes with embedded network details.
-- Perform 3D transformations and visualizations of SVG elements.
-- Export and manage SVG content efficiently.
+- **🏷️ Tags & Labels**: Circle, rectangle, triangle shapes with auto-fitting text
+- **📋 Tablets & Slates**: Custom layouts for diving slates, instruction cards, test sheets
+- **🔄 Recto-Verso**: Double-sided designs with automatic text orientation
+- **🎨 Branded Items**: Position logos with flip compensation for proper alignment
+- **🖨️ 3D Models**: Export STL files ready for multi-material 3D printing
+- **📐 Custom Layouts**: Title zones, side text, main content areas with rotation support
 
-## Installation
+## 🚀 Quick Start
 
-To use the SVG Tag Generator, clone the repository to your local machine and ensure that you have Python installed. Some scripts may require additional dependencies, which can be installed using `pip`:
+### Installation
 
 ```bash
 git clone https://github.com/PetitPhoenix/svgtag.git
 cd svgtag
-pip install -r requirements.txt
+pip install -e ".[developer]"
 ```
-### Dependencies
-The SVG Tag Generator relies on several third-party libraries to provide its functionality with special thanks to:
-- [FontTools](https://github.com/fonttools/fonttools): A library for manipulating fonts, supporting TrueType, OpenType, AFM and to an extent Type 1 and some Mac-specific formats.
-- [Trimesh](https://github.com/mikedh/trimesh): A library for loading and using triangular meshes with an emphasis on watertight surfaces and fast operations.
 
-
-## Modules
-The SVG Tag Generator consists of several modules, each tailored for specific functionalities:
-- svgprocess: Core module for creating and manipulating SVG content.
-- shape2svg: Functions to generate SVG shapes with customizable dimensions and styles.
-- text2svg: Convert text into SVG paths using various fonts and styles.
-- generators: Submodules for generating specific SVG items like rings, tags, and Wi-Fi QR codes.
-- scripts: Utility scripts for exporting SVG to different formats and batch processing.
-
-
-## How-To
-
-The following examples demonstrate how to use the SVG Tag Generator to create various SVG elements and perform operations such as 3D transformations and exporting to different formats.
-
-### Generating a Tag with a Circular Shape
-
-<img src="examples/outputs/tag/tag.svg" alt="Tag" width="200"/>
+### Simple Example
 
 ```python
-from svgtag.shape2svg import shape_svg
+from svgtag.svg.shapes import tag_circle_svg
+from svgtag.svg.composition import add_text_zone
 
-# Define the dimensions and properties for the tag
-width_mm = 80
-height_mm = 35
-thk = 1
-shape = 'circle'
-phi = 5
+# Create tag
+svg, layout = tag_circle_svg(length=80, height=35, hole_diameter=6, border=3)
 
-# Generate an SVG tag with the specified properties
-svg = shape_svg(width_mm, height_mm, thk, shape, phi)
-svg.unit = 'mm'
-svg.width = width_mm
-svg.height = height_mm
-svg.viewBox = [0, 0, width_mm, height_mm]
-
-# Save the SVG tag to a file
-output_path = 'path/to/output/directory'
-svg_file_path = os.path.join(output_path, 'shape.svg')
-svg.generate_svg_file(svg_file_path)
+# Add text
+area = layout.get_area('main')
+add_text_zone(svg, "My Tag", "path/to/font.ttf", area)
+svg.update_svg_content()
+svg.generate_svg_file("tag.svg")
 ```
 
-### Creating a Wi-Fi QR Code with Embedded Network Details
+## 📖 Core Capabilities
 
-<img src="examples/outputs/wifi/wifi.png" alt="Wi-Fi QR code" width="200"/>
-
+### Tag Shapes
 ```python
-from svgtag.generators.wifi import QR_gen
+# Available shapes
+from svgtag.svg.shapes import tag_circle_svg, tag_rectangle_svg, tag_triangle_svg
 
-# Define Wi-Fi network details and SVG properties
-network = 'MyNetwork'
-password = 'MyPassword'
-protocol = 'WPA/WPA2'
-hidden = 'true'
-width_mm = 100
-height_mm = 100
-padding_mm = 5
-text_elements = [
-    # Define text elements to include in the SVG
-]
-
-# Generate the Wi-Fi QR code SVG
-svg_instance = QR_gen(network, password, protocol, hidden, text_elements, width_mm, height_mm, padding_mm, static_files_path)
-
-# Save the Wi-Fi QR code SVG to a file
-output_path = 'path/to/output/directory'
-output_file = os.path.join(output_path, 'wifi_qr_code.svg')
-svg_instance.generate_svg_file(output_file)
+# Customizable parameters
+svg, layout = tag_circle_svg(
+    length=80,           # Width in mm
+    height=35,           # Height in mm
+    hole_diameter=6,     # Mounting hole
+    border=3            # Text margin
+)
 ```
 
-### Creating a Personalized Ring with Text Engraving (for napkins ring for instance)
-
-<img src="examples/outputs/ring/Test.png" alt="Napkin ring" width="200"/>
-
+### Text Handling
 ```python
-from svgtag.generators.ring import ring, export
+# Auto-fitting text with line control
+add_text_zone(svg, "Your text here", font_path, area,
+    n=2,              # Force 2 lines (None = auto)
+    text_scale=0.8,   # 80% of max size
+    rotation=90       # Optional rotation
+)
 
-# Define the parameters for the ring
-diameter = 20  # Diameter of the ring in millimeters
-height = 10    # Height of the ring in millimeters
-thickness = 2  # Thickness of the ring in millimeters
-res = 20       # Resolution for the 3D mesh
-font_dir = 'path/to/font/directory'  # Directory containing font files
-font = 'OpenSans-Regular.ttf'        # Font file for the text engraving
-text = "Your Text Here"              # Text to engrave on the ring
-
-# Define the output path for the generated files
-output_path = 'path/to/output/directory'
-os.makedirs(output_path, exist_ok=True)  # Create the directory if it does not exist
-filename = "custom_ring"  # Base filename for the output files
-
-# Generate the ring with the specified parameters
-mesh = ring(text, diameter, height, thickness, res, font_dir, font, output_path, filename, shape=1, brand=True, vis=False)
-
-# Export the ring to an STL file for 3D printing
-export(mesh, style='stl', path=output_path, name=filename)
+# Manual line breaks
+add_text_zone(svg, "Line 1\nLine 2", font_path, area, n=2)
 ```
 
-### Generating a Business Card
-
+### 3D Printing
 ```python
-from svgtag.examples.business_cards import generate_participant_cards
+from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
+from svgtag.mesh.assembly import assemble_plate, export_stl
 
-# Define card details
-name = 'John Doe'
-title = 'Software Engineer'
-discipline = 'Development'
-location = 'New York, USA'
+# Convert SVG to 3D mesh
+shape_mesh = extrude_path(svg_to_path2d(shape_svg), thickness=3)
+text_mesh = extrude_path(svg_to_path2d(text_svg), thickness=1)
 
-# Generate the business card
-generate_participant_cards(name, title, discipline, location, 'output_directory', 'card_name')
+# Assemble (boolean subtract text from shape)
+plate = assemble_plate(shape_mesh, [text_mesh])
+
+# Export STL for multi-material printing
+export_stl([plate, text_mesh], "output_dir", ['plate.stl', 'text.stl'])
 ```
 
-### Creating a Tag
-
+### Recto-Verso Tags
 ```python
-from svgtag.examples.etiquettes_plongee import batch_tags
+# Flip text for back side
+verso_svg = svg.flip_element(-1, axis='vertical', center=(cx, cy))
 
-# Define tag data
-data = [
-    {"Catégorie": "Safety", "Id": 1, "Recto": "Are you ok?", "Verso": "I'm not ok!"}
-    # Add more tags as needed
-]
-
-# Generate diving tags
-batch_tags(data)
+# Or flip entire SVG
+verso_svg = svg.flip(axis='horizontal')
 ```
 
-### Exporting SVG Content
-
+### Brand/Logo Positioning
 ```python
-from svgtag.SVGprocess import SVG
+from svgtag.svg.layouts import brand_layout
 
-# Create an SVG instance
-svg_instance = SVG()
-
-# Add elements to the SVG
-svg_instance.add_rectangle(x=0, y=0, width=100, height=100, stroke="black", fill="none")
-
-# Export the SVG to a file
-svg_instance.generate_svg_file('output.svg')
+# Logo with automatic flip compensation
+brand_layout_obj = brand_layout(
+    main_area=area,
+    brand_position='bottom-right',  # Final position after flip
+    brand_scale=0.35,               # 35% of area
+    flip_axis='horizontal'          # Auto-adjusts for verso
+)
 ```
 
-# Contributing
-Contributions to the SVG Tag Generator are welcome. If you have a bug report, feature request, or a pull request, please feel free to contribute.
+### Custom Layouts
+```python
+from svgtag.svg.shapes import tablet_svg
+
+# Pre-built layout with multiple zones
+tablet, layout = tablet_svg(
+    width=80, height=129,
+    layout_type='narcose'  # title + side_text + main_text
+)
+
+# Access individual zones
+title_area = layout.get_area('title')
+side_area = layout.get_area('side_text')
+main_area = layout.get_area('main_text')
+```
+
+## 📂 Examples
+
+See `examples/` directory for complete working examples:
+- `tag_*.py` - Various tag configurations (shapes, text, 3D, brands)
+- `tablet_*.py` - Tablet/slate layouts with custom zones
+- Run any example: `python examples/tag_3d_with_brand.py`
+
+## 🏗️ Architecture
+
+```
+svgtag/
+├── geom/          # Geometric primitives (Shapely-based)
+├── svg/           # SVG generation and composition
+│   ├── shapes/    # Tag/tablet shapes
+│   ├── layouts.py # Layout generators
+│   └── text.py    # Text rendering with auto-fitting
+├── mesh/          # 3D operations (extrusion, assembly)
+└── utils/         # Utilities (number generation, etc.)
+```
+
+## 🔧 Key Dependencies
+
+- **FontTools** - TTF/OTF font manipulation
+- **Trimesh** - 3D mesh operations and STL export
+- **Shapely** - 2D geometric operations
+- **NumPy** - Numerical computations
+
+## 🤝 Contributing
+
+Contributions welcome! Please submit issues or pull requests on GitHub.
+
+## 🙏 Acknowledgments
+
+Special thanks to:
+- [FontTools](https://github.com/fonttools/fonttools) - Font manipulation
+- [Trimesh](https://github.com/mikedh/trimesh) - 3D mesh processing
+- [Shapely](https://github.com/shapely/shapely) - Geometric operations

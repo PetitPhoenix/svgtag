@@ -5,15 +5,13 @@ requires = ["setuptools >= 61.0", "wheel"]
 [project]
 name = "svgtag"
 requires-python = ">=3.8"
-version = "0.7.7"
+version = "0.8.0"
 authors = [{name = "Stéphane Besnard", email = "stephane.c.m.besnard@gmail.com"}]
-license = {file = "LICENSE.md"}
 description = "Process SVG files for generation of laser or 3D files."
 keywords = ["graphics", "laser", "mesh", "3D"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: MIT License",
-	"Intended Audience :: Developers",
+    "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -25,7 +23,10 @@ classifiers = [
     "Topic :: Multimedia :: Graphics",
     "Topic :: Multimedia :: Graphics :: 3D Modeling"
 ]
-dependencies = ["fonttools>=4.48.1"]
+dependencies = [
+    "fonttools>=4.48.1"
+    "shapely>=2.0",
+]
 
 [project.urls]
 homepage = "https://github.com/PetitPhoenix/svgtag"
@@ -37,33 +38,31 @@ content-type = "text/markdown"
 
 [project.optional-dependencies]
 3D = [
-    "trimesh>=4.6.10",
-	"qrcode",
+    "trimesh>=4.10",
+    "qrcode",
 ]
 
 developer = [
     "Pillow",
     "matplotlib",
-	"pandas",
-	"numpy",
+    "pandas",
+    "numpy",
 ]
 
 all = [
-    "trimesh>=4.6.10",
-	"qrcode",
+    "trimesh>=4.10",
+    "qrcode",
     "Pillow",
     "matplotlib",
-	"pandas",
-	"numpy",
+    "pandas",
+    "numpy",
 ]
 
 [tool.setuptools]
-packages = [
-    "svgtag",
-    "svgtag.generators",
-    "svgtag.scripts",
-]
 include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 target-version = "py38"
@@ -71,16 +70,15 @@ line-length = 90
 
 [tool.ruff.lint]
 select = [
-    # "ANN", # annotations
-    "B", # bugbear
-    "C", # comprehensions
-    "E", # style errors
-    "F", # flakes
-    "I", # import sorting
-    "RUF", # ruff specific rules
-    "UP", # upgrade
-    "W", # style warnings
-    "YTT", # sys.version
+    "B",
+    "C",
+    "E",
+    "F",
+    "I",
+    "RUF",
+    "UP",
+    "W",
+    "YTT",
     "ISC001",
     "ISC002",
     "NPY201",
@@ -88,16 +86,15 @@ select = [
 ]
 
 ignore = [
-  "C901", # Comprehension is too complex (11 > 10)
-  "N802", # Function name should be lowercase
-  "N806", # Variable in function should be lowercase
-  "E501", # Line too long ({width} > {limit} characters)
-  "B904", # raise ... from err
-  "B905", # zip() without an explicit strict= parameter
-  "RUF005", # recommends non-type-aware expansion
+  "C901",
+  "N802",
+  "N806",
+  "E501",
+  "B904",
+  "B905",
+  "RUF005",
 ]
 
-# don't allow implicit string concatenation
 flake8-implicit-str-concat = {"allow-multiline" = false}
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]

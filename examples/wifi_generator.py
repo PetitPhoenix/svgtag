@@ -1,8 +1,8 @@
 import datetime
 import os
 
-from svgtag.generators.wifi import QR_gen
-from svgtag.scripts.export import (
+from svg.generators.wifi import QR_gen
+from svg.scripts.export import (
     convert_svg_with_inkscape,
     prepare_target_directory,
     zip_subdirectory,

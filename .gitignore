@@ -4,34 +4,54 @@
 *.dxf
 *.stl
 *.html
+*.obj
+*.ply
+*.off
 
 # Python
 *.pyc
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
 # Distribution / packaging
 build/
 dist/
 *.egg-info/
 .eggs/
+*.whl
 
 # Environnements virtuels
 env/
 venv/
 .venv/
 ENV/
+env.bak/
+venv.bak/
 
 # IDE
 .idea/
 .vscode/
 *.pwj
 *.ud
+*.swp
+*.swo
+*~
 
 # Jupyter
 *.ipynb_checkpoints
 .ipynb_checkpoints/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
 # Projet spécifique
 draft/
@@ -40,7 +60,11 @@ documentation/src/generators.inc
 examples/outputs/
 !examples/inputs/*.svg
 tests/outputs/
+temp/
+tmp/
 
 # OS
 .DS_Store
 Thumbs.db
+*.bak
+*.tmp
