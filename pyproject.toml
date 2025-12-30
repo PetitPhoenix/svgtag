@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Multimedia :: Graphics :: 3D Modeling"
 ]
 dependencies = [
-    "fonttools>=4.48.1"
+    "fonttools>=4.48.1",
     "shapely>=2.0",
 ]
 
