@@ -248,21 +248,32 @@ def brand_layout(
     return layout
 
 
-def wifi_qr_layout(width: float, height: float, padding: float = 5) -> Layout:
-    """WiFi QR code card layout with text fields and QR zone."""
+def wifi_qr_layout(width, height, padding=5):
+    """
+    WiFi QR code card layout with text fields and QR zone.
+    
+    Args:
+        width: Card width in mm
+        height: Card height in mm
+        padding: Edge padding in mm
+    
+    Returns:
+        Layout with defined areas
+    """
     layout = Layout(width, height, padding)
     
     # Text areas (left 2/3)
-    layout.add_area('welcome', 0, 0, 2/3, 1/4, unit='ratio')
+    layout.add_area('title', 0, 0, 2/3, 1/4, unit='ratio')
     layout.add_area('subtitle', 0, 1/4, 2/3, 1/10, unit='ratio')
     layout.add_area('network_label', 0, 6/12, 1/2, 1/10, unit='ratio')
     layout.add_area('network_value', 0, 7.2/12, 1/2, 1/12, unit='ratio')
     layout.add_area('password_label', 0, 9/12, 1/2, 1/10, unit='ratio')
     layout.add_area('password_value', 0, 10.2/12, 1/2, 1/12, unit='ratio')
     
-    # QR code and icons (right side)
+    # QR code (right side)
     layout.add_area('qr_code', 2/3, 1/2, 1/3, 1/2, unit='ratio')
-    layout.add_area('wifi_icon', 2/3, 1/4, 1/6, 1/12, unit='ratio')
-    layout.add_area('signal_icon', 2/3, 0, 1/3, 1/4, unit='ratio')
+    
+    # Signal icon (top right)
+    layout.add_area('signal_icon', 2/3, 1/8, 1/3, 1/4, unit='ratio')
     
     return layout

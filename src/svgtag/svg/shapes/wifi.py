@@ -1,21 +1,31 @@
+"""
+WiFi QR code card generation.
+https://github.com/lincolnloop/python-qrcode
+"""
 import io
-import os
-
 import qrcode
 import qrcode.image.svg
-
 from ..base import SVG, read_svg
-from ..text import text_svg
-
-# https://github.com/lincolnloop/python-qrcode
+from ..layouts import wifi_qr_layout
 
 
-def QR_svg(network, password, protocol, hidden, box_size=10, border=0):
-    # factory = qrcode.image.svg.SvgImage # Simple factory, just a set of rects
-    # factory = qrcode.image.svg.SvgFragmentImage # Fragment factory (also just a set of rects)
-    factory = qrcode.image.svg.SvgPathImage  # Combined path factory, fixes white space that may occur when zooming   # Utilisez SvgPathImage pour un SVG compact
-    # SvgSquareDrawer, SvgCircleDrawer, SvgPathSquareDrawer, or SvgPathCircleDrawer
-
+def qr_code_svg(network, password, protocol='WPA', hidden=False, box_size=10, border=0):
+    """
+    Generate WiFi QR code as SVG string.
+    
+    Args:
+        network: WiFi network name (SSID)
+        password: WiFi password
+        protocol: 'WPA', 'WEP', or 'nopass'
+        hidden: True if network is hidden
+        box_size: Size of each QR box
+        border: Border size in boxes
+    
+    Returns:
+        SVG string
+    """
+    factory = qrcode.image.svg.SvgPathImage
+    
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -23,107 +33,94 @@ def QR_svg(network, password, protocol, hidden, box_size=10, border=0):
         border=border,
         image_factory=factory,
     )
-
-    qr.add_data(f"WIFI:T:{protocol};S:{network};P:{password};H:{hidden};;")
+    
+    # Escape special characters
+    def escape_wifi_string(s):
+        special_chars = ['\\', ';', ':', ',', '"']
+        for char in special_chars:
+            s = s.replace(char, '\\' + char)
+        return s
+    
+    network_escaped = escape_wifi_string(network)
+    password_escaped = escape_wifi_string(password)
+    hidden_str = 'true' if hidden else 'false'
+    
+    wifi_string = f"WIFI:T:{protocol};S:{network_escaped};P:{password_escaped};H:{hidden_str};;"
+    
+    qr.add_data(wifi_string)
     qr.make(fit=True)
     img = qr.make_image()
-
+    
     svg_io = io.BytesIO()
     img.save(svg_io)
     svg_string = svg_io.getvalue().decode("utf-8")
-
-    # qr = qrcode.make(f'WIFI:T:{protocol};S:{network};P:{password};H:{hidden};;',
-    #                      image_factory=factory,
-    #                      box_size=box_size,
-    #                      border=border)
+    
     return svg_string
 
-
-def QR_gen(
+def wifi_card_svg(
     network,
     password,
-    protocol,
-    hidden,
-    text_elements,
-    width_mm,
-    height_mm,
-    padding_mm,
-    static_files_path,
+    width_mm=100,
+    height_mm=100,
+    padding_mm=5,
+    protocol='WPA',
+    hidden=False,
+    signal_icon_path=None
 ):
-    for element in text_elements:
-        element["width"] = element["width"] * (width_mm - 2 * padding_mm)
-        element["height"] = element["height"] * (height_mm - 2 * padding_mm)
-        element["x"] = padding_mm
-        element["y"] = element["y"] * (height_mm - 2 * padding_mm) + padding_mm
-
-    svg_instance = SVG()
-    svg_instance.unit = "mm"
-    svg_instance.width = width_mm
-    svg_instance.height = height_mm
-    svg_instance.viewBox = [0, 0, width_mm, height_mm]
-
-    for element in text_elements:
-        font_path = os.path.join(
-            static_files_path,
-            "fonts",
-            element["font"].replace(".ttf", ""),
-            element["font"],
-        )
-        svg_data = text_svg(
-            text=element["text"],
-            font_path=font_path,
-            font_size=element["fontsize"],
-            zone_width=element["width"],
-            zone_height=element["height"],
-            x0=element["x"],
-            y0=element["y"],
-        )
-        svg_instance.add_group(svg_data.elements, translate=[0, 0], scale=1.0)
-        # svg_instance.add_element("rect", {"x": element['x'],
-        #                               "y": element['y'],
-        #                               "width": element['width'],
-        #                               "height": element['height'],
-        #                               "stroke": "black", "fill": "none", "stroke-width": 0.1 },
-        #                      {"translate": (0, 0), "scale": 1})
-
-    qr_svg = QR_svg(network, password, protocol, hidden, box_size=10, border=0)
-    qr_svg = SVG(qr_svg)
-    scale = min(
-        (width_mm / 2 - 2 * padding_mm) / qr_svg.width,
-        (height_mm / 2 - 2 * padding_mm) / qr_svg.height,
+    """
+    Generate WiFi card shape with QR code and optional signal icon.
+    """
+    from pathlib import Path
+    
+    # Create base SVG
+    svg = SVG()
+    svg.unit = "mm"
+    svg.width = width_mm
+    svg.height = height_mm
+    svg.viewBox = [0, 0, width_mm, height_mm]
+    
+    # Get layout
+    layout = wifi_qr_layout(width_mm, height_mm, padding_mm)
+    
+    # Add QR code
+    qr_svg_string = qr_code_svg(network, password, protocol, hidden)
+    qr_svg_obj = SVG(qr_svg_string)
+    
+    # Position and scale QR code (occupe toute la zone sans padding)
+    qr_area = layout.get_area('qr_code')
+    qr_scale = min(
+        qr_area.width / qr_svg_obj.width,
+        qr_area.height / qr_svg_obj.height
     )
-    svg_instance.add_group(
-        qr_svg.elements,
-        # translate=[width_mm / 2 + padding_mm, height_mm / 2 + padding_mm],
-        translate=[
-            width_mm * 3 / 4 - qr_svg.width * scale / 2,
-            height_mm / 2 + padding_mm,
-        ],
-        scale=scale,
+    
+    qr_x = qr_area.x + (qr_area.width - qr_svg_obj.width * qr_scale) / 2
+    qr_y = qr_area.y  # Commence pile au centre vertical (pas de centrage)
+    
+    svg.add_group(
+        qr_svg_obj.elements,
+        translate=[qr_x, qr_y],
+        scale=qr_scale
     )
-
-    wifi = read_svg(os.path.join(static_files_path, "images", "wifi.svg"))
-    wifi = SVG(wifi)
-    scale = min((width_mm / 6) / wifi.width, (height_mm / 12) / wifi.height)
-    svg_instance.add_group(
-        wifi.elements,
-        translate=[
-            width_mm * 3 / 4 - wifi.width * scale / 2,
-            height_mm / 2 - wifi.height * scale / 2,
-        ],
-        scale=scale,
-    )
-
-    signal = read_svg(os.path.join(static_files_path, "images", "network.svg"))
-    signal = SVG(signal)
-    scale = min(
-        (width_mm / 3 - 2 * padding_mm) / signal.width,
-        (height_mm / 2 - 2 * padding_mm) / signal.height,
-    )
-    svg_instance.add_group(
-        signal.elements,
-        translate=[width_mm * 2 / 3, height_mm / 4 - signal.height * scale / 2],
-        scale=scale,
-    )
-
-    return svg_instance
+    
+    # Add signal icon if provided
+    if signal_icon_path:
+        signal_path = Path(signal_icon_path)
+        
+        if signal_path.exists():
+            signal = SVG(read_svg(str(signal_path)))
+            signal_area = layout.get_area('signal_icon')
+            signal_scale = min(
+                signal_area.width / signal.width,
+                signal_area.height / signal.height
+            )
+            
+            signal_x = signal_area.x + (signal_area.width - signal.width * signal_scale) / 2
+            signal_y = signal_area.y + (signal_area.height - signal.height * signal_scale) / 2
+            
+            svg.add_group(
+                signal.elements,
+                translate=[signal_x, signal_y],
+                scale=signal_scale
+            )
+    
+    return svg, layout

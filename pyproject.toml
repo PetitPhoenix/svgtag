@@ -5,7 +5,7 @@ requires = ["setuptools >= 61.0", "wheel"]
 [project]
 name = "svgtag"
 requires-python = ">=3.8"
-version = "0.8.0"
+version = "0.8.1"
 authors = [{name = "Stéphane Besnard", email = "stephane.c.m.besnard@gmail.com"}]
 description = "Process SVG files for generation of laser or 3D files."
 keywords = ["graphics", "laser", "mesh", "3D"]
@@ -38,7 +38,7 @@ content-type = "text/markdown"
 
 [project.optional-dependencies]
 3D = [
-    "trimesh>=4.10",
+    "trimesh[easy]>=4.10",
     "qrcode",
 ]
 
