@@ -4,7 +4,7 @@ Generates a card with QR code and network information
 """
 from pathlib import Path
 from svgtag.svg.shapes.wifi import wifi_card_svg
-from svgtag.svg.composition import add_text_zone
+from svgtag.geom.shapes import rounded_rectangle
 from svgtag.svg.text import text_svg
 
 HERE = Path(__file__).resolve().parent
@@ -32,10 +32,12 @@ texts = {
 }
 
 # WiFi parameters
-network = "MyNetwork"
-password = "MyPassword"
+network = "Network"
+password = "Password"
 protocol = "WPA"
 hidden = False
+width = 100
+height = width
 
 print(f"Generating WiFi card...")
 print(f"  Network: {network}")
@@ -45,12 +47,28 @@ print(f"  Password: {password}")
 svg, layout = wifi_card_svg(
     network=network,
     password=password,
-    width_mm=100,
-    height_mm=100,
+    width_mm=width,
+    height_mm=height,
     padding_mm=5,
     protocol=protocol,
     hidden=hidden,
     signal_icon_path=signal_icon_path
+)
+# 1.5 Add card outline
+corner_radius = 5
+outline = rounded_rectangle(
+    width=width,
+    height=height,
+    corner_radius=corner_radius,
+    x=0,
+    y=0
+)
+
+svg.add_path(
+    outline,
+    stroke='black',
+    stroke_width='0.1',
+    fill='none'
 )
 
 # 2. Add title

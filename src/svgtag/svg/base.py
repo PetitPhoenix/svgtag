@@ -193,11 +193,33 @@ class SVG:
                 f"Warning: Attributes for element <{tag}/> are not a dictionary. Skipping element."
             )
 
-    def add_path(self, d, translate=None, scale=None, rotation=None, rotation_center=None):
-        """Add a path to the elements list with optional transformation."""
+    def add_path(self, d, translate=None, scale=None, rotation=None, rotation_center=None, **style_attrs):
+        """
+        Add a path to the elements list with optional transformation and style.
+        
+        Args:
+            d: SVG path string or Shapely geometry
+            translate: Translation [x, y]
+            scale: Scale factor
+            rotation: Rotation angle in degrees
+            rotation_center: Rotation center [cx, cy]
+            **style_attrs: Additional style attributes (stroke, fill, stroke_width, etc.)
+                        Note: underscores in keys are converted to hyphens (stroke_width → stroke-width)
+        """
+        # Convert Shapely geometry to SVG path if needed
+        if hasattr(d, 'exterior'):  # It's a Shapely Polygon
+            from svgtag.geom.converters import to_svg_path
+            d = to_svg_path(d)
+        
+        # Convert underscores to hyphens in attribute names
+        attributes = {"d": d}
+        for key, value in style_attrs.items():
+            svg_key = key.replace('_', '-')
+            attributes[svg_key] = value
+        
         element = {
             "tag": "path",
-            "attributes": {"d": d},
+            "attributes": attributes,
             "translate": translate,
             "scale": scale,
             "rotation": rotation,
