@@ -52,6 +52,26 @@ class SVG:
         empty.viewBox = self.viewBox.copy() if self.viewBox else None
         empty.unit = self.unit
         return empty
+    
+    def copy(self):
+        """
+        Create a deep copy of this SVG.
+        
+        Returns:
+            New SVG with copied dimensions and elements
+        """
+        # Start with empty copy (dimensions already handled)
+        new_svg = self.create_empty_copy()
+        
+        # Copy header and ppi
+        new_svg.ppi = self.ppi
+        new_svg.header = self.header
+        
+        # Deep copy elements
+        import copy
+        new_svg.elements = copy.deepcopy(self.elements)
+        
+        return new_svg
 
     def extract_header(self):
         match = re.search(r"<svg[^>]*>\n", self.content)
@@ -478,6 +498,54 @@ class SVG:
         
         return new_svg
 
+    def recalculate_viewbox(self, margin=0):
+        """
+        Recalculate viewBox to fit all elements with optional margin.
+        Uses trimesh to calculate actual bounds from rendered paths.
+        
+        Args:
+            margin: Additional space around content (default: 0)
+        
+        Returns:
+            self (for chaining)
+        """
+        if not self.elements:
+            # No elements, use width/height if available
+            if self.width and self.height:
+                self.viewBox = [0, 0, self.width, self.height]
+            return self
+        
+        try:
+            from svgtag.mesh.extrusion import svg_to_path2d
+            
+            # Convert SVG to path2d to get actual bounds
+            path2d = svg_to_path2d(self)
+            
+            # Get bounds from all entities
+            if hasattr(path2d, 'bounds'):
+                bounds = path2d.bounds  # [[minx, miny], [maxx, maxy]]
+                min_x, min_y = bounds[0]
+                max_x, max_y = bounds[1]
+                
+                self.viewBox = [
+                    min_x - margin,
+                    min_y - margin,
+                    (max_x - min_x) + 2 * margin,
+                    (max_y - min_y) + 2 * margin
+                ]
+                print(self.viewBox)
+            else:
+                # Fallback
+                if self.width and self.height:
+                    self.viewBox = [0, 0, self.width, self.height]
+        
+        except Exception as e:
+            print(f"Warning: Could not recalculate viewBox: {e}")
+            # Fallback to width/height
+            if self.width and self.height:
+                self.viewBox = [0, 0, self.width, self.height]
+        
+        return self
 
     def flip_element(self, element_index, axis='horizontal', center=None):
         """
