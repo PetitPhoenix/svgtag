@@ -41,7 +41,7 @@ def mesh_from_path(pathname, thickness):
         path = trimesh.load_path(file, file_type="svg")
     
     poly = path.polygons_full
-    path = [trimesh.load_path(p.simplify(tolerance=0.1)) for p in poly]
+    # path = [trimesh.load_path(p.simplify(tolerance=0.1)) for p in poly]
     
     if isinstance(path, list):
         mesh = [p.extrude(thickness) for p in path]
