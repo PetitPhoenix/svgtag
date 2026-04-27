@@ -9,7 +9,8 @@ from svgtag.svg.shapes import tag_circle_svg, tag_rectangle_svg, tag_triangle_sv
 from svgtag.svg.composition import add_text_zone, add_outline, add_border_outline
 from svgtag.svg.layouts import brand_layout
 from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
-from svgtag.mesh.assembly import assemble_plate, create_scene, export_stl
+from svgtag.mesh.assembly import assemble_plate
+from svgtag.mesh.visualization import create_scene, export_stl
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent

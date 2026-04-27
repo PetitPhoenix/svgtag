@@ -9,7 +9,7 @@ from svgtag.svg.shapes import tag_circle_svg
 from svgtag.svg.composition import add_text_zone
 from svgtag.svg.base import SVG
 from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
-from svgtag.mesh.assembly import assemble_plate, create_scene, export_stl
+from svgtag.mesh.assembly import assemble_plate, create_scene, export_stl, export_html
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -72,14 +72,13 @@ verso_mesh.apply_transform(translation_matrix)
 plate = assemble_plate(shape_mesh, [recto_mesh, verso_mesh])
 
 # 7. Créer la scène
-scene = create_scene([plate, recto_mesh, verso_mesh])
+scene = create_scene([plate, recto_mesh, verso_mesh], view='bottom', tilt=30, rot=0)
 
 # 8. Export
 export_stl([plate, recto_mesh, verso_mesh], str(output_path), 
            ['mesh.stl', 'side_A.stl', 'side_B.stl'])
 
-with open(output_path / "tag_3D_recto_verso.html", "w") as file:
-    file.write(viewer.scene_to_html(scene))
+export_html(scene, output_path / "tag_3D_recto_verso.html")
 
 print(f"✓ Tag 3D recto-verso généré dans {output_path}")
 print("  - mesh.stl (plaque noire)")

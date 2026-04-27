@@ -7,7 +7,8 @@ from svgtag.svg.shapes import tag_circle_svg
 from svgtag.svg.composition import add_text_zone
 from svgtag.svg.base import SVG
 from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
-from svgtag.mesh.assembly import assemble_plate, create_scene, export_stl
+from svgtag.mesh.assembly import assemble_plate
+from svgtag.mesh.visualization import create_scene, export_stl, export_html
 
 HERE = Path(__file__).resolve().parent
 output_path = HERE / "outputs" / "tag" / Path(__file__).stem
@@ -46,9 +47,8 @@ plate = assemble_plate(shape_mesh, [recto_mesh])
 scene = create_scene([plate, recto_mesh])
 
 # 6. Export
-export_stl([plate, recto_mesh], str(output_path), ['mesh.stl', 'side_A.stl'])
+export_stl([plate, recto_mesh], str(output_path), ['mesh.stl', 'side_A.stl'], view='bottom', tilt=30, rot=0)
 
-with open(output_path / "tag_3D_recto.html", "w") as file:
-    file.write(viewer.scene_to_html(scene))
+export_html(scene, output_path / "tag_3D_recto.html")
 
 print(f"✓ Tag 3D recto généré dans {output_path}")
