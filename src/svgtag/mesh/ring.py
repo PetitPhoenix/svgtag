@@ -3,14 +3,17 @@ import numpy as np
 import trimesh
 
 
-def wrap_around(mesh):
+def wrap_around(mesh, theta=np.pi/2):
     """
     Wrap flat mesh around cylindrical surface.
-    Legacy implementation using subdivide + polar transformation.
     
     Args:
-        mesh: Flat mesh to wrap
-    
+        mesh:  Flat mesh to wrap (X=angular, Y=radius, Z=height)
+        theta: Starting angle on cylinder (default π/2 = +Y face)
+               π/2  → face +Y (back)
+              -π/2  → face -Y (front)
+               0    → face +X (right)
+               etc.
     Returns:
         Wrapped mesh
     """
@@ -20,39 +23,10 @@ def wrap_around(mesh):
     z = mesh.vertices[:, 2]
     y_min = min(y)
     mesh.vertices = np.column_stack(
-        (-y * np.cos(x / y_min + np.pi / 2), y * np.sin(x / y_min + np.pi / 2), z)
+        (-y * np.cos(x / y_min + theta),
+          y * np.sin(x / y_min + theta), z)
     )
     return mesh
-
-
-def mesh_from_path(pathname, thickness):
-    """
-    Load SVG path and extrude to 3D mesh.
-    Legacy function - prefer using svg_to_path2d + extrude_path.
-    
-    Args:
-        pathname: Path to SVG file
-        thickness: Extrusion thickness
-    
-    Returns:
-        trimesh.Trimesh
-    """
-    with open(pathname, "rb") as file:
-        path = trimesh.load_path(file, file_type="svg")
-    
-    poly = path.polygons_full
-    # path = [trimesh.load_path(p.simplify(tolerance=0.1)) for p in poly]
-    
-    if isinstance(path, list):
-        mesh = [p.extrude(thickness) for p in path]
-    else:
-        mesh = path.extrude(thickness)
-    
-    if isinstance(mesh, list):
-        mesh = trimesh.boolean.union(mesh)
-    
-    return mesh
-
 
 def revolve_ring(contour_vertices, sections=64):
     """
