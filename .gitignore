@@ -62,6 +62,7 @@ examples/outputs/
 tests/outputs/
 temp/
 tmp/
+**/_old/
 
 # OS
 .DS_Store
