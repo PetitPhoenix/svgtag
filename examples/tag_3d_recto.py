@@ -16,6 +16,7 @@ output_path.mkdir(parents=True, exist_ok=True)
 
 ROOT = HERE.parent
 font_path = str(ROOT / "static" / "fonts" / "Impact" / "impact.ttf")
+font_path = str(ROOT / "static" / "fonts" / "AstralSisters" / "Astral Sisters.ttf")
 
 # 1. Créer la forme
 shape_svg, _ = tag_circle_svg(length=80, height=35, hole_diameter=6, border=3)
@@ -30,7 +31,9 @@ recto_svg.viewBox = shape_svg.viewBox.copy()
 recto_svg.unit = "mm"
 
 area = layout.get_area('main')
-add_text_zone(recto_svg, "Impression d'une étiquette", font_path, area)
+# add_text_zone(recto_svg, "Impression d'une étiquette", font_path, area)
+add_text_zone(recto_svg, "Bienvenue", font_path, area)
+
 recto_svg.update_svg_content()
 
 # 3. Convertir en meshes
@@ -47,8 +50,7 @@ plate = assemble_plate(shape_mesh, [recto_mesh])
 scene = create_scene([plate, recto_mesh])
 
 # 6. Export
-export_stl([plate, recto_mesh], str(output_path), ['mesh.stl', 'side_A.stl'], view='bottom', tilt=30, rot=0)
-
+# export_stl([plate, recto_mesh], str(output_path), ['mesh.stl', 'side_A.stl'], view='bottom', tilt=30, rot=0)
 export_html(scene, output_path / "tag_3D_recto.html")
 
 print(f"✓ Tag 3D recto généré dans {output_path}")

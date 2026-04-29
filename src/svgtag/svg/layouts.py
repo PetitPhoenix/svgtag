@@ -271,7 +271,7 @@ def wifi_qr_layout(width, height, padding=5):
     layout.add_area('password_value', 0, 10.2/12, 1/2, 1/12, unit='ratio')
     
     # QR code (right side)
-    layout.add_area('qr_code', 2/3, 1/2, 1/3, 1/2, unit='ratio')
+    layout.add_area('qr_code', 3/5, 1/2, 2/5, 1/2, unit='ratio')
     
     # Signal icon (top right)
     layout.add_area('signal_icon', 2/3, 1/8, 1/3, 1/4, unit='ratio')
