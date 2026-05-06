@@ -3,6 +3,7 @@ import os
 import trimesh
 import tempfile
 from shapely.geometry.polygon import orient
+from shapely.geometry import Polygon as ShapelyPolygon
 from .svg_helpers import prepare_for_trimesh_angles
 
 
@@ -15,33 +16,52 @@ MIN_POLYGON_AREA = 0.01
 SIMPLIFY_TOLERANCE = 0.001
 
 
+def _augment_orphan_holes(closed_polygons):
+    """Take polygons_closed (which already nests holes when winding is
+    consistent) and absorb any smaller polygon strictly contained inside
+    a larger one as an additional hole. Handles cases where SVG/font
+    contour winding is inconsistent (e.g. Inter's 'B' counters)."""
+    polys = sorted(closed_polygons, key=lambda p: p.area, reverse=True)
+    used = [False] * len(polys)
+    result = []
+    for i, parent in enumerate(polys):
+        if used[i]:
+            continue
+        used[i] = True
+        holes = [list(r.coords) for r in parent.interiors]
+        for j in range(i + 1, len(polys)):
+            if used[j]:
+                continue
+            if parent.contains(polys[j].representative_point()):
+                holes.append(list(polys[j].exterior.coords))
+                used[j] = True
+        result.append(ShapelyPolygon(parent.exterior.coords, holes=holes))
+    return result
+
+
 def _extrude_polygon(polygon, thickness):
-    """
-    Extrude a single Shapely polygon into a clean watertight mesh.
-    
-    Steps:
-      1. Simplify to remove redundant points (Bezier tessellation often produces
-         hundreds of points clustered within fractions of a millimeter)
-      2. Orient CCW (Shapely standard) so trimesh produces correct normals
-      3. Extrude
-    """
+    """Extrude a single Shapely polygon (with optional holes) into a
+    watertight mesh. Simplify removes Bezier tessellation noise; orient
+    enforces Shapely's exterior-CCW + holes-CW convention required by
+    trimesh's triangulator."""
     polygon = polygon.simplify(SIMPLIFY_TOLERANCE)
     polygon = orient(polygon, sign=1.0)
     return trimesh.creation.extrude_polygon(polygon, height=thickness)
 
 
 def extrude_path(path2d, thickness):
-    """
-    Extrude a 2D path into a 3D mesh.
+    """Extrude a 2D path into a single 3D Trimesh (or None).
 
-    Each Shapely polygon (with its holes) is extruded individually using
-    trimesh.creation.extrude_polygon, after light simplification and CCW
-    orientation to handle complex script fonts cleanly.
-
-    Returns:
-        trimesh.Trimesh OR list of trimesh.Trimesh
+    Pipeline:
+      1. polygons_closed → Shapely's already-nested polygons
+      2. _augment_orphan_holes → absorb separately-listed inner contours
+         when font winding is inconsistent
+      3. extrude each polygon individually
+      4. concatenate (no boolean union: meshes are guaranteed disjoint
+         by step 2, and trimesh.boolean.union can silently collapse holes
+         depending on the backend)
     """
-    polygons = path2d.polygons_full
+    polygons = _augment_orphan_holes(list(path2d.polygons_closed))
 
     if not polygons:
         return path2d.extrude(thickness)
@@ -63,20 +83,9 @@ def extrude_path(path2d, thickness):
 
     if not meshes:
         return None
-
     if len(meshes) == 1:
         return meshes[0]
-
-    # Try union for a clean single mesh
-    try:
-        unioned = trimesh.boolean.union(meshes)
-        if unioned is not None and unioned.is_volume:
-            return unioned
-    except Exception:
-        pass
-
-    # Union failed → return list (assemble_plate handles iteration)
-    return meshes
+    return trimesh.util.concatenate(meshes)
 
 
 def svg_to_path2d(svg, prepare=True):

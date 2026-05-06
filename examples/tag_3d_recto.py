@@ -9,6 +9,7 @@ from svgtag.svg.base import SVG
 from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
 from svgtag.mesh.assembly import assemble_plate
 from svgtag.mesh.visualization import create_scene, export_stl, export_html
+from svgtag.mesh.colors import DARK_GRAY, OFF_WHITE
 
 HERE = Path(__file__).resolve().parent
 output_path = HERE / "outputs" / "tag" / Path(__file__).stem
@@ -16,6 +17,7 @@ output_path.mkdir(parents=True, exist_ok=True)
 
 ROOT = HERE.parent
 font_path = str(ROOT / "static" / "fonts" / "Impact" / "impact.ttf")
+font_path = str(ROOT / "static" / "fonts" / "Inter" / "Inter-Regular.ttf")
 font_path = str(ROOT / "static" / "fonts" / "AstralSisters" / "Astral Sisters.ttf")
 
 # 1. Créer la forme
@@ -46,8 +48,12 @@ recto_mesh = extrude_path(recto_path2d, thickness=1)
 # 4. Assembler
 plate = assemble_plate(shape_mesh, [recto_mesh])
 
-# 5. Créer la scène
-scene = create_scene([plate, recto_mesh])
+# 5. Créer la scène (vue bottom: la face gravée est à z=0..1)
+scene = create_scene(
+    [plate, recto_mesh],
+    colors=[DARK_GRAY, OFF_WHITE],
+    view='top', tilt=30, rot=0,
+)
 
 # 6. Export
 # export_stl([plate, recto_mesh], str(output_path), ['mesh.stl', 'side_A.stl'], view='bottom', tilt=30, rot=0)
