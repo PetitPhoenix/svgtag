@@ -15,27 +15,49 @@ MIN_POLYGON_AREA = 0.01
 # but enough to clean up dense Bezier-derived polygons (e.g. complex script fonts).
 SIMPLIFY_TOLERANCE = 0.001
 
+def _resolve_polygons(closed_polygons):
+    """Build properly nested + non-overlapping polygons.
 
-def _augment_orphan_holes(closed_polygons):
-    """Take polygons_closed (which already nests holes when winding is
-    consistent) and absorb any smaller polygon strictly contained inside
-    a larger one as an additional hole. Handles cases where SVG/font
-    contour winding is inconsistent (e.g. Inter's 'B' counters)."""
+    Iteratively, for each polygon (largest first):
+    - Smaller polygons strictly contained → absorbed as holes (counters)
+    - Smaller polygons that overlap (intersect but not contained) → unioned
+      with parent (e.g. f bar+stem, cursive ligatures)
+    - Disjoint polygons → left as separate parents in next iterations
+    """
     polys = sorted(closed_polygons, key=lambda p: p.area, reverse=True)
     used = [False] * len(polys)
     result = []
-    for i, parent in enumerate(polys):
+    for i in range(len(polys)):
         if used[i]:
             continue
         used[i] = True
-        holes = [list(r.coords) for r in parent.interiors]
-        for j in range(i + 1, len(polys)):
-            if used[j]:
-                continue
-            if parent.contains(polys[j].representative_point()):
-                holes.append(list(polys[j].exterior.coords))
-                used[j] = True
-        result.append(ShapelyPolygon(parent.exterior.coords, holes=holes))
+        parent = polys[i]
+        absorbed_holes = []
+        # Loop until no more absorptions/unions (parent may grow via union
+        # and then absorb new neighbors)
+        changed = True
+        while changed:
+            changed = False
+            for j in range(len(polys)):
+                if used[j] or j == i:
+                    continue
+                child = polys[j]
+                if parent.contains(child):
+                    absorbed_holes.append(list(child.exterior.coords))
+                    used[j] = True
+                    changed = True
+                elif parent.overlaps(child):
+                    parent = parent.union(child)
+                    used[j] = True
+                    changed = True
+        # Build final polygon (union may have produced MultiPolygon - rare)
+        if isinstance(parent, ShapelyPolygon):
+            all_holes = ([list(r.coords) for r in parent.interiors]
+                         + absorbed_holes)
+            result.append(ShapelyPolygon(parent.exterior.coords, holes=all_holes))
+        else:
+            for p in parent.geoms:
+                result.append(p)
     return result
 
 
@@ -53,16 +75,17 @@ def extrude_path(path2d, thickness):
     """Extrude a 2D path into a single 3D Trimesh (or None).
 
     Pipeline:
-      1. polygons_closed → Shapely's already-nested polygons
-      2. _augment_orphan_holes → absorb separately-listed inner contours
-         when font winding is inconsistent
-      3. extrude each polygon individually
-      4. concatenate (no boolean union: meshes are guaranteed disjoint
-         by step 2, and trimesh.boolean.union can silently collapse holes
-         depending on the backend)
+      1. polygons_closed → flat list of Shapely polygons
+      2. _resolve_polygons → nest holes (counters strictly contained) and
+         union genuinely-overlapping polygons (e.g. f bar+stem, cursive
+         ligatures), while leaving touching neighbours alone (e.g. QR
+         modules sharing an edge)
+      3. extrude each resolved polygon individually
+      4. concatenate (no trimesh.boolean.union: meshes are disjoint by
+         construction and boolean.union can silently collapse holes)
     """
-    polygons = _augment_orphan_holes(list(path2d.polygons_closed))
-
+    polygons = _resolve_polygons(list(path2d.polygons_closed))
+    
     if not polygons:
         return path2d.extrude(thickness)
 
