@@ -132,7 +132,7 @@ def draw_text_line(text, x, y, font, font_size, scale):
             tpen = TransformPen(pen, (scale, 0, 0, -scale, x, y))
             glyph.draw(tpen)
             path_data = pen.getCommands()
-            elements.append({"tag": "path", "attributes": {"d": path_data, "fill-rule": "evenodd"}})
+            elements.append({"tag": "path", "attributes": {"d": path_data}})
             x += glyph.width * scale
     return elements
 
