@@ -5,7 +5,7 @@ requires = ["setuptools >= 61.0", "wheel"]
 [project]
 name = "svgtag"
 requires-python = ">=3.8"
-version = "0.9.0"
+version = "0.10.0"
 authors = [{name = "Stéphane Besnard", email = "stephane.c.m.besnard@gmail.com"}]
 description = "Process SVG files for generation of laser or 3D files."
 keywords = ["graphics", "laser", "mesh", "3D"]
