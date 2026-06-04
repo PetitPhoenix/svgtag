@@ -126,3 +126,64 @@ def svg_to_path2d(svg, prepare=True):
 
     os.unlink(tmp_path)
     return path2d
+
+
+# ============================================================================
+# Glyph thickening (laser / 3D-print legibility)
+# ============================================================================
+# Thicken text *geometry* (Shapely buffer) so thin strokes — especially cursive
+# ones — reach a printable minimum width, without changing the font. The 2D
+# counterpart (drawing thickened glyphs into an SVG) lives in svg.text
+# (add_thickened_text), which reuses glyph_polygons / thicken_polygons below.
+
+def glyph_polygons(text_svg):
+    """Polygons of a text SVG, counters correctly nested as holes.
+
+    Uses _resolve_polygons (containment-based nesting) rather than
+    Path2D.polygons_full, which misses counters for some fonts (e.g. Inter):
+    the 'e'/'a'/'o' counters would otherwise come out filled when thickened.
+    """
+    return _resolve_polygons(list(svg_to_path2d(text_svg).polygons_closed))
+
+
+def thicken_polygons(polygons, offset, join_style=1):
+    """Thicken polygons by ``offset`` per side (round buffer + clean union).
+
+    ``unary_union`` is essential: without it, overlapping cursive glyphs fill a
+    neighbour's counter (overlapping-fills artifact). ``orient`` enforces
+    exterior-CCW / holes-CW so the result renders under any fill-rule and
+    extrudes watertight. ``offset <= 0`` returns the polygons unchanged.
+    """
+    from shapely.geometry import MultiPolygon
+    from shapely.ops import unary_union
+    if not offset or offset <= 0:
+        return [p for p in polygons if not p.is_empty and p.area > 1e-9]
+    buffered = [p.buffer(offset, join_style=join_style)
+                for p in polygons if not p.is_empty]
+    if not buffered:
+        return []
+    merged = unary_union(buffered)
+    geoms = merged.geoms if isinstance(merged, MultiPolygon) else [merged]
+    return [orient(g, sign=1.0) for g in geoms if g.area > 1e-9]
+
+
+def extrude_text(text_svg, thickness, offset=0.0):
+    """Watertight 3D mesh of the (optionally thickened) text. ``None`` if empty.
+
+    Extruded polygon-by-polygon (``_extrude_polygon``) so it is watertight by
+    construction — counters stay holes, never filled.
+    """
+    polys = glyph_polygons(text_svg)
+    if offset and offset > 0:
+        polys = thicken_polygons(polys, offset)
+    meshes = []
+    for g in polys:
+        if g.area <= 1e-9:
+            continue
+        try:
+            meshes.append(_extrude_polygon(g, thickness))
+        except Exception:
+            pass
+    if not meshes:
+        return None
+    return meshes[0] if len(meshes) == 1 else trimesh.util.concatenate(meshes)
