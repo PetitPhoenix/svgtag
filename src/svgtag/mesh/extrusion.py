@@ -68,7 +68,15 @@ def _extrude_polygon(polygon, thickness):
     trimesh's triangulator."""
     polygon = polygon.simplify(SIMPLIFY_TOLERANCE)
     polygon = orient(polygon, sign=1.0)
-    return trimesh.creation.extrude_polygon(polygon, height=thickness)
+    mesh = trimesh.creation.extrude_polygon(polygon, height=thickness)
+    # Thin/tiny glyphs (punctuation in a fine font) can yield a few degenerate
+    # (zero-area) faces -> the mesh is no longer watertight, and concatenations
+    # / downstream boolean engraving silently skip it. Drop degenerate faces and
+    # weld vertices (no fill_holes -> glyph counters preserved).
+    if not mesh.is_watertight:
+        mesh.update_faces(mesh.nondegenerate_faces())
+        mesh.merge_vertices()
+    return mesh
 
 
 def extrude_path(path2d, thickness):
