@@ -272,8 +272,51 @@ def wifi_qr_layout(width, height, padding=5):
     
     # QR code (right side)
     layout.add_area('qr_code', 3/5, 1/2, 2/5, 1/2, unit='ratio')
-    
+
     # Signal icon (top right)
     layout.add_area('signal_icon', 2/3, 1/8, 1/3, 1/4, unit='ratio')
-    
+
+    return layout
+
+
+def business_card_layout(width, height, padding=5):
+    """
+    Landscape business-card QR layout (e.g. 85×55 mm vCard).
+
+    Unlike :func:`wifi_qr_layout` (tuned for a square card), this spreads the
+    text down a left column and gives the QR a large, vertically-centred block
+    on the right with a caption zone under it — so a wide card doesn't cram all
+    its text into the lower-left corner.
+
+    Zones (ratios are relative to the padded inner box):
+    - ``title``    : name, top of the left column (prominent)
+    - ``org``      : company / role, under the name
+    - ``line1..3`` : contact rows (phone / email / site), evenly spread
+    - ``qr_code``  : large square QR, right side, vertically centred
+    - ``qr_caption``: small strip under the QR (e.g. "Scan me")
+
+    No ``signal_icon`` zone: the big QR carries the card on its own.
+
+    Args:
+        width: Card width in mm
+        height: Card height in mm
+        padding: Edge padding in mm
+
+    Returns:
+        Layout with defined areas
+    """
+    layout = Layout(width, height, padding)
+
+    # Left text column (~56% of the inner width), spread over the full height.
+    col_w = 0.56
+    layout.add_area('title', 0, 0.06, col_w, 0.24, unit='ratio')   # name (script)
+    layout.add_area('org',   0, 0.34, col_w, 0.12, unit='ratio')   # company/role
+    layout.add_area('line1', 0, 0.51, col_w, 0.12, unit='ratio')   # contact rows,
+    layout.add_area('line2', 0, 0.65, col_w, 0.12, unit='ratio')   #   evenly
+    layout.add_area('line3', 0, 0.79, col_w, 0.12, unit='ratio')   #   spread
+
+    # QR block (right side): large square, vertically centred, caption beneath.
+    layout.add_area('qr_code',    0.62, 0.12, 0.38, 0.60, unit='ratio')
+    layout.add_area('qr_caption', 0.60, 0.78, 0.42, 0.12, unit='ratio')
+
     return layout

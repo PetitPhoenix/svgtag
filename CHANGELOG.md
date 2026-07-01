@@ -5,6 +5,24 @@ Toutes les modifications notables de svgtag.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 versionnage [SemVer](https://semver.org/lang/fr/).
 
+## [0.12.0] - 2026-07-01
+
+### Added
+- **`business_card_layout(width, height, padding)`** (`svg/layouts.py`) : mise en
+  page paysage pour carte de visite (ex. 85×55 mm). Contrairement à
+  `wifi_qr_layout` (pensé carré), le texte est réparti dans une colonne à gauche
+  (`title`, `org`, `line1..3`) et le QR occupe un grand bloc centré verticalement
+  à droite (`qr_code`) avec une zone de légende (`qr_caption`). Pas de zone
+  `signal_icon`.
+- **`text_svg(..., align="center"|"left"|"right")`** (`svg/text.py`) : alignement
+  horizontal du texte dans sa zone. `center` par défaut → comportement inchangé.
+
+### Changed
+- **`qr_card_svg(..., layout=None)`** (`svg/shapes/qr.py`) : accepte un `Layout`
+  déjà construit (défaut : `wifi_qr_layout`), ce qui permet des cartes non carrées.
+  L'icône en haut à droite n'est dessinée que si le layout expose une zone
+  `signal_icon` (les layouts sans cette zone, comme la carte de visite, l'ignorent).
+
 ## [0.11.0] - 2026-06-05
 
 ### Added

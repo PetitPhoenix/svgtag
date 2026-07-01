@@ -44,10 +44,17 @@ def qr_payload_svg(data, box_size=10, border=0, error_correction=None):
     return svg_io.getvalue().decode("utf-8")
 
 
-def qr_card_svg(payload, width_mm=100, height_mm=100, padding_mm=5, icon_path=None):
+def qr_card_svg(payload, width_mm=100, height_mm=100, padding_mm=5, icon_path=None,
+                layout=None):
     """
     Generate a QR card shape: a QR code for an arbitrary `payload`, positioned
-    in the standard card layout, with an optional icon (top-right).
+    in a card layout, with an optional icon (top-right).
+
+    Args:
+        layout: optional pre-built Layout defining the card zones. Defaults to
+            ``wifi_qr_layout`` (square card). Pass e.g. ``business_card_layout``
+            for a landscape card. The layout must expose a ``qr_code`` area; the
+            top-right icon is only drawn if it also exposes a ``signal_icon`` area.
 
     Returns:
         (svg, layout) — `layout` exposes the named text zones so callers can
@@ -59,9 +66,10 @@ def qr_card_svg(payload, width_mm=100, height_mm=100, padding_mm=5, icon_path=No
     svg.height = height_mm
     svg.viewBox = [0, 0, width_mm, height_mm]
 
-    layout = wifi_qr_layout(width_mm, height_mm, padding_mm)
+    if layout is None:
+        layout = wifi_qr_layout(width_mm, height_mm, padding_mm)
 
-    # QR code — occupe toute la zone sans padding (même placement que la wifi card)
+    # QR code — centré dans sa zone (le carré s'inscrit dans l'aire disponible)
     qr_svg_obj = SVG(qr_payload_svg(payload))
     qr_area = layout.get_area('qr_code')
     qr_scale = min(
@@ -72,12 +80,12 @@ def qr_card_svg(payload, width_mm=100, height_mm=100, padding_mm=5, icon_path=No
     qr_y = qr_area.y
     svg.add_group(qr_svg_obj.elements, translate=[qr_x, qr_y], scale=qr_scale)
 
-    # Optional icon (top-right) — signal icon for wifi, link/contact icon otherwise
-    if icon_path:
+    # Optional icon (top-right) — only if the layout provides a signal_icon zone
+    icon_area = layout.get_area('signal_icon')
+    if icon_path and icon_area is not None:
         icon_p = Path(icon_path)
         if icon_p.exists():
             icon = SVG(read_svg(str(icon_p)))
-            icon_area = layout.get_area('signal_icon')
             icon_scale = min(
                 icon_area.width / icon.width,
                 icon_area.height / icon.height,

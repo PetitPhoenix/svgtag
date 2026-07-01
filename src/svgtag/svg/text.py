@@ -289,11 +289,12 @@ def shape_text(text, font, zone_width, zone_height, scale, interline_ratio=0.8, 
 
 
 def text_svg(
-    text, font_path, font_size, zone_width, zone_height, x0, y0, interline_ratio=0.8, n=None
+    text, font_path, font_size, zone_width, zone_height, x0, y0, interline_ratio=0.8, n=None,
+    align="center",
 ):
     """
     Generate SVG for text fitted in a dedicated area.
-    
+
     Args:
         text: Text to render
         font_path: Path to TTF font file
@@ -302,7 +303,9 @@ def text_svg(
         x0, y0: Top-left corner of text zone
         interline_ratio: Line spacing ratio (default 0.8)
         n: Optional forced number of lines (None = auto, integer = force N lines)
-    
+        align: Horizontal alignment within the zone — "center" (default),
+            "left" or "right". Vertical alignment is always centred.
+
     Returns:
         SVG object with rendered text
     """
@@ -341,7 +344,7 @@ def text_svg(
     else:
         total_height = line_metrics[0]["height"]
 
-    # Center text in zone
+    # Vertical alignment is always centred; horizontal follows `align`.
     vertical_center = y0 + zone_height / 2
     horizontal_center = x0 + zone_width / 2
 
@@ -349,7 +352,12 @@ def text_svg(
     all_elements = []
     for i, (metric, line) in enumerate(zip(line_metrics, text_lines)):
         text_width = metric["width"]
-        start_X = horizontal_center - text_width / 2
+        if align == "left":
+            start_X = x0
+        elif align == "right":
+            start_X = x0 + zone_width - text_width
+        else:
+            start_X = horizontal_center - text_width / 2
         start_Y = (
             vertical_center - total_height / 2 + line_metrics[0]["ascent"] + i * interline
         )
