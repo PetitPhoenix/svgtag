@@ -5,6 +5,58 @@ Toutes les modifications notables de svgtag.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 versionnage [SemVer](https://semver.org/lang/fr/).
 
+## [0.13.0]
+
+### Fixed
+- `examples/tag_3d_recto_verso.py` : `create_scene`, `export_stl`, `export_html`
+  importés de `mesh.visualization`.
+- `extrude_path`, `extrude_text` : les contours que trimesh ne construit pas
+  (`None` dans `polygons_closed`) sont ignorés.
+- `extrude_path`, `extrude_text` : les polygones qui se touchent sont fusionnés
+  avant extrusion (union, fermeture de 0,01 mm).
+- `extrude_path`, `extrude_text` : chaque extrusion est un volume une fois ses
+  sommets arrondis en float32 ; sinon le polygone est accroché à une grille de
+  0,1 µm, fermé, ouvert de 5 µm, ou écarté.
+
+### Added
+- Paramètre `tolerance` de `extrude_path` et `extrude_text` (`TOLERANCE` = 0,01 mm).
+
+### Changed
+- **Déplacements (imports à modifier)** :
+  - `svg_to_path2d` : `mesh.extrusion` → `geom.converters` ;
+  - `glyph_polygons` : `mesh.extrusion` → `geom.converters` ;
+  - `prepare_for_trimesh_angles` : `mesh.svg_helpers` → `geom.converters` ;
+  - `thicken_polygons` : `mesh.extrusion` → `geom.operations`.
+- `geom.operations` : `resolve_polygons`, `merge_touching`, `polygons_of`,
+  `repair_variants` (auparavant privées dans `mesh.extrusion`).
+- `svgtag.mesh` exporte `extrude_text` au lieu de `svg_to_path2d`.
+- `svg` n'importe plus `mesh` ; `geom` n'importe trimesh qu'à l'appel de
+  `svg_to_path2d`.
+- `geom.converters.to_svg` sans dimensions : viewBox calée sur les bornes de
+  la géométrie ; `tag_*_svg` et `tablet_svg` l'utilisent.
+- `svg_to_path2d` lit le SVG en mémoire (plus de fichier temporaire).
+- `SVG.flip` et `SVG.flip_element` : matrice calculée par `SVG._flip_matrix`.
+- `brand_layout` et `brand_layout_auto` : position calculée par
+  `_flipped_position` et `_brand_origin`.
+- `mesh.extrusion`, `mesh.assembly`, `prepare_for_trimesh_angles` : messages
+  via `logging` au lieu de `print`.
+- Dépendances déclarées dans `pyproject.toml` uniquement. Cœur : `fonttools`,
+  `shapely`, `numpy`, `qrcode`. Extra `3d` : `trimesh[easy]>=4.11,<6`,
+  `manifold3d>=3.0,<4`. `all` = `3d` + `developer`. Python ≥ 3.10.
+- `geom.shapes.circle` : `buffer(quad_segs=…)` au lieu de `resolution=`.
+
+### Removed
+- `requirements.txt`, `requirements.in`.
+- `svg/shapes/ring.py`, `svg/text2svg_self.py`, `utils/export.py`,
+  `utils/file_cat.py`, `utils/list_files.py`, `utils/list_functions.py`,
+  `utils/svgtag_functions.txt`, `svg/base.main()`.
+- `tests/test_generator_wifi.py`, `tests/test_scripts_export.py`.
+- `Pillow` de l'extra `developer`.
+- `mesh/svg_helpers.py` (`prepare_face_A`, `prepare_face_B_extrusion`,
+  `prepare_face_B_visual`, `svg_to_tempfile`, `convert_angle_for_trimesh`).
+- `geom.converters.to_mesh`.
+- `svg.text.flip`.
+
 ## [0.12.0] - 2026-07-01
 
 ### Added

@@ -14,7 +14,7 @@ def rectangle(width, height, x=0, y=0):
 
 def circle(radius, center_x=0, center_y=0, num_points=64):
     """Crée un cercle"""
-    return Point(center_x, center_y).buffer(radius, resolution=num_points//4)
+    return Point(center_x, center_y).buffer(radius, quad_segs=num_points // 4)
 
 
 def rounded_rectangle(width, height, corner_radius, x=0, y=0):

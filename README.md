@@ -18,8 +18,10 @@ A versatile Python library for creating customizable SVG tags, labels, and 3D pr
 ```bash
 git clone https://github.com/PetitPhoenix/svgtag.git
 cd svgtag
-pip install -e ".[developer]"
+pip install -e ".[all]"
 ```
+
+Extras : `3d` (trimesh, manifold3d), `developer`, `all`.
 
 ### Simple Example
 
@@ -145,9 +147,10 @@ svgtag/
 ## 🔧 Key Dependencies
 
 - **FontTools** - TTF/OTF font manipulation
-- **Trimesh** - 3D mesh operations and STL export
 - **Shapely** - 2D geometric operations
 - **NumPy** - Numerical computations
+- **qrcode** - QR code generation
+- **Trimesh**, **manifold3d** (extra `3d`) - 3D mesh operations, booleans and STL export
 
 ## 🤝 Contributing
 
