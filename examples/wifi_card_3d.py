@@ -11,10 +11,11 @@ from svgtag.svg.base import SVG
 from svgtag.geom.shapes import rounded_rectangle
 from svgtag.geom.converters import to_svg
 from svgtag.svg.layouts import brand_layout_auto
-from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
+from svgtag.geom.converters import svg_to_path2d
+from svgtag.mesh.extrusion import extrude_path
 from svgtag.mesh.assembly import assemble_plate
 from svgtag.mesh.visualization import create_scene, export_stl
-from svgtag.mesh.svg_helpers import prepare_for_trimesh_angles
+from svgtag.geom.converters import prepare_for_trimesh_angles
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent

@@ -446,10 +446,10 @@ def add_thickened_text(target_svg, text_svg, offset, fill='black'):
     """Draw the *thickened* glyphs of ``text_svg`` into ``target_svg`` (2D).
 
     For laser / 3D-print legibility: thickens thin (esp. cursive) strokes by
-    ``offset`` mm per side, without changing the font. The geometry lives in
-    mesh.extrusion (glyph_polygons / thicken_polygons); this is the 2D drawing
-    side. evenodd keeps the counters open.
+    ``offset`` mm per side. Polygons come from geom (glyph_polygons,
+    thicken_polygons); evenodd keeps the counters open.
     """
-    from svgtag.mesh.extrusion import glyph_polygons, thicken_polygons
+    from svgtag.geom.converters import glyph_polygons
+    from svgtag.geom.operations import thicken_polygons
     for g in thicken_polygons(glyph_polygons(text_svg), offset):
         target_svg.add_path(g, fill=fill, fill_rule='evenodd')

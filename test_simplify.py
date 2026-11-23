@@ -18,7 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from svgtag.svg.shapes import tag_circle_svg
 from svgtag.svg.composition import add_text_zone
 from svgtag.svg.base import SVG
-from svgtag.mesh.extrusion import svg_to_path2d
+from svgtag.geom.converters import svg_to_path2d
 
 
 # Configuration test

@@ -6,7 +6,8 @@ import numpy as np
 from pathlib import Path
 import trimesh
 from svgtag.geom.shapes import ring_contour
-from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
+from svgtag.geom.converters import svg_to_path2d
+from svgtag.mesh.extrusion import extrude_path
 from svgtag.mesh.ring import revolve_ring, wrap_around, create_ring_with_text
 from svgtag.mesh.visualization import create_scene, export_html
 from svgtag.mesh.colors import DARK_GRAY, OFF_WHITE

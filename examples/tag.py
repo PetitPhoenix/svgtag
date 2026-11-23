@@ -8,7 +8,8 @@ import trimesh
 from svgtag.svg.shapes import tag_circle_svg, tag_rectangle_svg, tag_triangle_svg
 from svgtag.svg.composition import add_text_zone, add_outline, add_border_outline
 from svgtag.svg.layouts import brand_layout
-from svgtag.mesh.extrusion import svg_to_path2d, extrude_path
+from svgtag.geom.converters import svg_to_path2d
+from svgtag.mesh.extrusion import extrude_path
 from svgtag.mesh.assembly import assemble_plate
 from svgtag.mesh.visualization import create_scene, export_stl
 

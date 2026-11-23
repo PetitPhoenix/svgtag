@@ -9,8 +9,12 @@ from .shapes import (
     tag_triangle,
     tablet_with_ear
 )
-from .operations import union, difference, buffer_geometry, validate
-from .converters import to_svg_path, to_svg, to_mesh
+from .operations import (
+    union, difference, buffer_geometry, validate, resolve_polygons, thicken_polygons,
+)
+from .converters import (
+    to_svg_path, to_svg, prepare_for_trimesh_angles, svg_to_path2d, glyph_polygons,
+)
 
 __all__ = [
     # Shapes
@@ -27,8 +31,12 @@ __all__ = [
     'difference',
     'buffer_geometry',
     'validate',
+    'resolve_polygons',
+    'thicken_polygons',
     # Converters
     'to_svg_path',
     'to_svg',
-    'to_mesh',
+    'prepare_for_trimesh_angles',
+    'svg_to_path2d',
+    'glyph_polygons',
 ]

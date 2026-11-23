@@ -516,7 +516,7 @@ class SVG:
             return self
         
         try:
-            from svgtag.mesh.extrusion import svg_to_path2d
+            from svgtag.geom.converters import svg_to_path2d
             
             # Convert SVG to path2d to get actual bounds
             path2d = svg_to_path2d(self)
