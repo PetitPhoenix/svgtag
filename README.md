@@ -135,14 +135,29 @@ See `examples/` directory for complete working examples:
 
 ```
 svgtag/
-├── geom/          # Geometric primitives (Shapely-based)
-├── svg/           # SVG generation and composition
-│   ├── shapes/    # Tag/tablet shapes
-│   ├── layouts.py # Layout generators
-│   └── text.py    # Text rendering with auto-fitting
-├── mesh/          # 3D operations (extrusion, assembly)
-└── utils/         # Utilities (number generation, etc.)
+├── svg/                  # SVG format
+│   ├── base.py           #   SVG class
+│   ├── text.py           #   text rendering with auto-fitting
+│   ├── layout.py         #   Layout, PrintableArea, declarative specs
+│   ├── layouts.py        #   predefined layouts
+│   ├── composition.py    #   text zones
+│   └── shapes/           #   tag, tablet, QR shapes drawn as SVG
+├── geom/                 # Shapely
+│   ├── shapes.py         #   primitives (rectangle, circle, tag, tablet, ring profile)
+│   ├── operations.py     #   operations on polygons (union, nesting, merging, thickening, repair)
+│   └── converters.py     #   Shapely ↔ SVG ↔ trimesh Path2D
+├── mesh/                 # 3D (trimesh)
+│   ├── extrusion.py      #   extrusion of polygons into watertight meshes
+│   ├── assembly.py       #   boolean assembly of a plate
+│   ├── ring.py           #   ring revolution and wrapping
+│   ├── visualization.py  #   scenes, HTML and STL export
+│   └── colors.py         #   material presets
+└── utils/                # number sets
 ```
+
+Dependencies go `mesh` → `geom` → `svg`. `svg` imports `geom` only inside
+`SVG.add_path`, `add_thickened_text` and `SVG.recalculate_viewbox`; `geom`
+imports trimesh only inside `svg_to_path2d`.
 
 ## 🔧 Key Dependencies
 
@@ -155,6 +170,16 @@ svgtag/
 ## 🤝 Contributing
 
 Contributions welcome! Please submit issues or pull requests on GitHub.
+
+- Separation of responsibilities: each function goes in the module it belongs to.
+- Docstrings and comments describe; they do not justify or narrate history.
+- Keep tests minimal: cover possibilities rather than particular cases.
+
+```bash
+pip install -e ".[all]"
+pytest -q tests
+cd examples && for f in *.py; do python "$f" > /dev/null || echo "KO $f"; done
+```
 
 ## 🙏 Acknowledgments
 
