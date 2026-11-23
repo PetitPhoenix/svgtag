@@ -370,31 +370,6 @@ def text_svg(
     return svg
 
 
-def flip(svg_elements, position):
-    """
-    Flip SVG elements horizontally around a position.
-    
-    Args:
-        svg_elements: List of SVG element dictionaries
-        position: X position to flip around
-    
-    Returns:
-        List of flipped SVG elements
-    """
-    flipped_elements = []
-    for element in svg_elements:
-        if "scale" not in element:
-            element["scale"] = 1
-
-        # Horizontal flip
-        element["scale"] = -1
-        translate_x, translate_y = element.get("translate", [0, 0])
-        element["translate"] = [position - translate_x, translate_y]
-
-        flipped_elements.append(element)
-
-    return flipped_elements
-
 def get_text_dimensions(text, font_path, max_width, max_height, n=None):
     """
     Calculate actual dimensions of rendered text using font metrics.
@@ -409,9 +384,6 @@ def get_text_dimensions(text, font_path, max_width, max_height, n=None):
     Returns:
         (width, height) of the actual text bounding box
     """
-    from fontTools.ttLib import TTFont
-    from ..svg.text import shape_text, calculate_interline, calculate_line_metrics
-    
     # Load font
     font = TTFont(font_path)
     unitsPerEm = font["head"].unitsPerEm

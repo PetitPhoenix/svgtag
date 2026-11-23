@@ -1,6 +1,5 @@
 """Tablet SVG generator with printable areas"""
-from ...geom import tablet_with_ear, to_svg_path
-from ..base import SVG
+from ...geom import tablet_with_ear, to_svg
 from ..layouts import tablet_simple_layout, narcose_layout
 
 
@@ -48,26 +47,7 @@ def tablet_svg(
     )
     
     # 2. Create SVG
-    bounds = geom.bounds
-    minx, miny, maxx, maxy = bounds
-    svg_width = maxx - minx
-    svg_height = maxy - miny
-    
-    svg = SVG()
-    svg.width = svg_width
-    svg.height = svg_height
-    svg.viewBox = [minx, miny, svg_width, svg_height]
-    svg.unit = "mm"
-    
-    # Add shape path
-    path_d = to_svg_path(geom)
-    svg.add_element('path', {
-        'd': path_d,
-        'fill': 'none',
-        'stroke': 'black',
-        'stroke-width': 0.1
-    })
-    svg.update_svg_content()
+    svg = to_svg(geom)
     
     # 3. Create layout
     if isinstance(layout_type, str):

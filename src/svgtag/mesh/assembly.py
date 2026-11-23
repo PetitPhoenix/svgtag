@@ -1,7 +1,9 @@
 """3D mesh assembly utilities"""
-import os
+import logging
+
 import trimesh
-import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 def assemble_plate(shape_mesh, face_meshes):
@@ -24,12 +26,12 @@ def assemble_plate(shape_mesh, face_meshes):
             if hasattr(face_mesh, 'is_volume') and face_mesh.is_volume:
                 valid_faces.append(face_mesh)
             else:
-                print(f"  Warning: Skipping non-volume face mesh")
-        except:
-            print(f"  Warning: Could not check face mesh validity")
+                logger.warning("skipping non-volume face mesh")
+        except Exception:
+            logger.warning("could not check face mesh validity")
 
     if not valid_faces:
-        print("  Warning: No valid face meshes, returning shape only")
+        logger.warning("no valid face meshes, returning shape only")
         return shape_mesh
 
     try:
@@ -40,17 +42,17 @@ def assemble_plate(shape_mesh, face_meshes):
             for face_mesh in valid_faces[1:]:
                 try:
                     negative = negative.union(face_mesh)
-                except:
-                    print(f"  Warning: Could not union face mesh, concatenating")
+                except Exception:
+                    logger.warning("could not union face mesh, concatenating")
                     negative = trimesh.util.concatenate([negative, face_mesh])
     except Exception as e:
-        print(f"  Warning: Face union failed: {e}, using first mesh only")
+        logger.warning("face union failed: %s, using first mesh only", e)
         negative = valid_faces[0]
 
     try:
         plate = trimesh.boolean.difference([shape_mesh, negative])
     except Exception as e:
-        print(f"  Warning: Boolean difference failed: {e}, returning shape")
+        logger.warning("boolean difference failed: %s, returning shape", e)
         return shape_mesh
 
     return plate

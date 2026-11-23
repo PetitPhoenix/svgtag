@@ -1,10 +1,14 @@
 """SVG to 3D mesh extrusion utilities"""
+import logging
+
 import trimesh
 from shapely.geometry.polygon import orient
 
 from ..geom.converters import glyph_polygons
 from ..geom.operations import resolve_polygons, thicken_polygons
 
+
+logger = logging.getLogger(__name__)
 
 # Minimum polygon area (mm²) — below this, polygon is considered degenerate
 MIN_POLYGON_AREA = 0.01
@@ -59,11 +63,11 @@ def extrude_path(path2d, thickness):
         try:
             meshes.append(_extrude_polygon(poly, thickness))
         except Exception as e:
-            print(f"  Warning: skipped polygon (area={poly.area:.3f}): {e}")
+            logger.warning("skipped polygon (area=%.3f): %s", poly.area, e)
             skipped += 1
 
     if skipped:
-        print(f"  extrude_path: skipped {skipped} degenerate polygon(s)")
+        logger.info("extrude_path: skipped %d degenerate polygon(s)", skipped)
 
     if not meshes:
         return None

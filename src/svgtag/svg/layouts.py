@@ -98,6 +98,38 @@ def tag_layout(
     
     return layout
 
+_FLIPPED_POSITION = {
+    'horizontal': {'bottom-right': 'top-right', 'bottom-left': 'top-left',
+                   'top-right': 'bottom-right', 'top-left': 'bottom-left'},
+    'vertical':   {'bottom-right': 'bottom-left', 'bottom-left': 'bottom-right',
+                   'top-right': 'top-left', 'top-left': 'top-right'},
+}
+
+
+def _flipped_position(position, flip_axis):
+    """Position after a flip around ``flip_axis`` ('horizontal', 'vertical' or None)."""
+    return _FLIPPED_POSITION.get(flip_axis, {}).get(position, position)
+
+
+def _brand_origin(main_area, position, width, height, border):
+    """Top-left corner of a ``width`` x ``height`` box placed at ``position``
+    ('bottom-right', 'bottom-left', 'top-right', 'top-left', 'center') inside
+    ``main_area``, ``border`` mm from its edges."""
+    left = main_area.x + border
+    right = main_area.x + main_area.width - width - border
+    top = main_area.y + border
+    bottom = main_area.y + main_area.height - height - border
+    origins = {
+        'bottom-right': (right, bottom),
+        'bottom-left': (left, bottom),
+        'top-right': (right, top),
+        'top-left': (left, top),
+        'center': (main_area.x + (main_area.width - width) / 2,
+                   main_area.y + (main_area.height - height) / 2),
+    }
+    return origins[position]
+
+
 def brand_layout_auto(
     main_area: PrintableArea,
     text: str,
@@ -131,46 +163,9 @@ def brand_layout_auto(
     # Get actual text dimensions
     text_width, text_height = get_text_dimensions(text, font_path, max_width, max_height, n)
     
-    # Adjust position if flip
-    adjusted_position = brand_position
-    if flip_axis:
-        if flip_axis == 'horizontal':
-            position_map = {
-                'bottom-right': 'top-right',
-                'bottom-left': 'top-left',
-                'top-right': 'bottom-right',
-                'top-left': 'bottom-left',
-                'center': 'center'
-            }
-            adjusted_position = position_map.get(brand_position, brand_position)
-        elif flip_axis == 'vertical':
-            position_map = {
-                'bottom-right': 'bottom-left',
-                'bottom-left': 'bottom-right',
-                'top-right': 'top-left',
-                'top-left': 'top-right',
-                'center': 'center'
-            }
-            adjusted_position = position_map.get(brand_position, brand_position)
-    
     layout = Layout(main_area.width, main_area.height, border)
-    
-    # Calculate position based on actual text dimensions
-    if adjusted_position == 'bottom-right':
-        x = main_area.x + main_area.width - text_width - border
-        y = main_area.y + main_area.height - text_height - border
-    elif adjusted_position == 'bottom-left':
-        x = main_area.x + border
-        y = main_area.y + main_area.height - text_height - border
-    elif adjusted_position == 'top-right':
-        x = main_area.x + main_area.width - text_width - border
-        y = main_area.y + border
-    elif adjusted_position == 'top-left':
-        x = main_area.x + border
-        y = main_area.y + border
-    elif adjusted_position == 'center':
-        x = main_area.x + (main_area.width - text_width) / 2
-        y = main_area.y + (main_area.height - text_height) / 2
+    x, y = _brand_origin(main_area, _flipped_position(brand_position, flip_axis),
+                         text_width, text_height, border)
     
     layout.add_area('brand', x, y, text_width, text_height, unit='mm')
     
@@ -197,51 +192,11 @@ def brand_layout(
     Returns:
         Layout with 'brand' area
     """
-    # Adjust position if flip
-    if flip_axis:
-        if flip_axis == 'horizontal':
-            position_map = {
-                'bottom-right': 'top-right',
-                'bottom-left': 'top-left',
-                'top-right': 'bottom-right',
-                'top-left': 'bottom-left',
-                'center': 'center'
-            }
-            brand_position = position_map.get(brand_position, brand_position)
-        
-        elif flip_axis == 'vertical':
-            position_map = {
-                'bottom-right': 'bottom-left',
-                'bottom-left': 'bottom-right',
-                'top-right': 'top-left',
-                'top-left': 'top-right',
-                'center': 'center'
-            }
-            brand_position = position_map.get(brand_position, brand_position)
-    
-    # Create layout based on main area dimensions
     layout = Layout(main_area.width, main_area.height, border)
-    
-    # Calculate brand dimensions (relative to main area)
     brand_width = main_area.width * brand_scale
     brand_height = main_area.height * brand_scale
-    
-    # Calculate position (relative to main area, then offset by main_area position)
-    if brand_position == 'bottom-right':
-        x = main_area.x + main_area.width - brand_width - border
-        y = main_area.y + main_area.height - brand_height - border
-    elif brand_position == 'bottom-left':
-        x = main_area.x + border
-        y = main_area.y + main_area.height - brand_height - border
-    elif brand_position == 'top-right':
-        x = main_area.x + main_area.width - brand_width - border
-        y = main_area.y + border
-    elif brand_position == 'top-left':
-        x = main_area.x + border
-        y = main_area.y + border
-    elif brand_position == 'center':
-        x = main_area.x + (main_area.width - brand_width) / 2
-        y = main_area.y + (main_area.height - brand_height) / 2
+    x, y = _brand_origin(main_area, _flipped_position(brand_position, flip_axis),
+                         brand_width, brand_height, border)
     
     layout.add_area('brand', x, y, brand_width, brand_height, unit='mm')
     

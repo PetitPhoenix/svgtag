@@ -70,7 +70,8 @@ add_text_zone(svg, "Line 1\nLine 2", font_path, area, n=2)
 ```python
 from svgtag.geom.converters import svg_to_path2d
 from svgtag.mesh.extrusion import extrude_path
-from svgtag.mesh.assembly import assemble_plate, export_stl
+from svgtag.mesh.assembly import assemble_plate
+from svgtag.mesh.visualization import export_stl
 
 # Convert SVG to 3D mesh
 shape_mesh = extrude_path(svg_to_path2d(shape_svg), thickness=3)

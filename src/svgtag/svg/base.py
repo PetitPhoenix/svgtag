@@ -423,6 +423,24 @@ class SVG:
         )
         self.content = f"{self.header}\n{svg_elements_content}</svg>"
 
+    def _flip_matrix(self, axis, center):
+        """SVG matrix mirroring around a vertical ('vertical') or horizontal
+        ('horizontal') axis through ``center``, or through the viewBox centre
+        (width/height without viewBox) if ``center`` is None."""
+        if axis not in ('vertical', 'horizontal'):
+            raise ValueError(f"Invalid axis: {axis}. Use 'vertical' or 'horizontal'")
+        if center is not None:
+            cx, cy = center
+            return [-1, 0, 0, 1, 2 * cx, 0] if axis == 'vertical' else [1, 0, 0, -1, 0, 2 * cy]
+        if self.viewBox:
+            minx, miny, viewbox_width, viewbox_height = self.viewBox
+            if axis == 'vertical':
+                return [-1, 0, 0, 1, 2 * (minx + viewbox_width / 2), 0]
+            return [1, 0, 0, -1, 0, miny + viewbox_height]
+        tx = self.width if self.width else 0
+        ty = self.height if self.height else 0
+        return [-1, 0, 0, 1, tx, 0] if axis == 'vertical' else [1, 0, 0, -1, 0, ty]
+
     def flip(self, axis='vertical', center=None):
         """
         Flip the entire SVG content around an axis.
@@ -438,41 +456,8 @@ class SVG:
             svg.flip('vertical')  # Flip left↔right (mirror around vertical axis)
             svg.flip('horizontal')  # Flip top↔bottom (mirror around horizontal axis)
         """
-        # Calculate flip center and matrix
-        if center is None:
-            # Auto: use viewBox center
-            if self.viewBox:
-                if axis == 'vertical':
-                    # Flip left↔right: mirror around vertical axis at center
-                    minx, _, viewbox_width, _ = self.viewBox
-                    tx = 2 * (minx + viewbox_width / 2)
-                    matrix = [-1, 0, 0, 1, tx, 0]
-                elif axis == 'horizontal':
-                    # Flip top↔bottom: mirror around horizontal axis
-                    _, miny, _, viewbox_height = self.viewBox
-                    ty = miny + viewbox_height
-                    matrix = [1, 0, 0, -1, 0, ty]
-                else:
-                    raise ValueError(f"Invalid axis: {axis}. Use 'vertical' or 'horizontal'")
-            else:
-                # Fallback
-                tx = self.width if self.width else 0
-                ty = self.height if self.height else 0
-                matrix = [-1, 0, 0, 1, tx, 0] if axis == 'vertical' else [1, 0, 0, -1, 0, ty]
-        else:
-            # Manual: use provided center
-            cx, cy = center
-            if axis == 'vertical':
-                # Flip left↔right around vertical axis at x=cx
-                tx = 2 * cx
-                matrix = [-1, 0, 0, 1, tx, 0]
-            elif axis == 'horizontal':
-                # Flip top↔bottom around horizontal axis at y=cy
-                ty = 2 * cy
-                matrix = [1, 0, 0, -1, 0, ty]
-            else:
-                raise ValueError(f"Invalid axis: {axis}. Use 'vertical' or 'horizontal'")
-        
+        matrix = self._flip_matrix(axis, center)
+
         # Create new SVG
         new_svg = SVG()
         new_svg.width = self.width
@@ -533,7 +518,6 @@ class SVG:
                     (max_x - min_x) + 2 * margin,
                     (max_y - min_y) + 2 * margin
                 ]
-                print(self.viewBox)
             else:
                 # Fallback
                 if self.width and self.height:
@@ -559,34 +543,8 @@ class SVG:
         Returns:
             New SVG with element flipped
         """
-        # Calculate matrix (same logic as flip())
-        if center is None:
-            if self.viewBox:
-                if axis == 'vertical':
-                    minx, _, viewbox_width, _ = self.viewBox
-                    tx = 2 * (minx + viewbox_width / 2)
-                    matrix = [-1, 0, 0, 1, tx, 0]
-                elif axis == 'horizontal':
-                    _, miny, _, viewbox_height = self.viewBox
-                    ty = miny + viewbox_height
-                    matrix = [1, 0, 0, -1, 0, ty]
-                else:
-                    raise ValueError(f"Invalid axis: {axis}. Use 'vertical' or 'horizontal'")
-            else:
-                tx = self.width if self.width else 0
-                ty = self.height if self.height else 0
-                matrix = [-1, 0, 0, 1, tx, 0] if axis == 'vertical' else [1, 0, 0, -1, 0, ty]
-        else:
-            cx, cy = center
-            if axis == 'vertical':
-                tx = 2 * cx
-                matrix = [-1, 0, 0, 1, tx, 0]
-            elif axis == 'horizontal':
-                ty = 2 * cy
-                matrix = [1, 0, 0, -1, 0, ty]
-            else:
-                raise ValueError(f"Invalid axis: {axis}. Use 'vertical' or 'horizontal'")
-        
+        matrix = self._flip_matrix(axis, center)
+
         # Create new SVG
         new_svg = SVG()
         new_svg.width = self.width

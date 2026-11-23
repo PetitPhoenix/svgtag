@@ -1,6 +1,5 @@
 """Tag SVG generators with printable areas"""
-from ...geom import tag_circle, tag_rectangle, tag_triangle, to_svg_path, add_hole
-from ..base import SVG
+from ...geom import tag_circle, tag_rectangle, tag_triangle, to_svg, add_hole
 from ..layouts import tag_layout
 
 
@@ -9,27 +8,9 @@ def _create_tag_svg(geom, length, height, has_ear, border):
     Create SVG from tag geometry.
     Uses geometry bounds for viewBox.
     """
-    # Get bounds from geometry
-    bounds = geom.bounds
-    minx, miny, maxx, maxy = bounds
-    
-    # Create SVG
-    svg = SVG()
-    svg.width = maxx - minx
-    svg.height = maxy - miny
-    svg.viewBox = [minx, miny, maxx - minx, maxy - miny]
-    svg.unit = "mm"
-    
-    # Add path
-    path_d = to_svg_path(geom)
-    svg.add_element('path', {
-        'd': path_d,
-        'fill': 'none',
-        'stroke': 'black',
-        'stroke-width': 0.1
-    })
-    svg.update_svg_content()
-    
+    svg = to_svg(geom)
+    minx, miny = svg.viewBox[0], svg.viewBox[1]
+
     # Create layout
     layout = tag_layout(length, height, has_ear=has_ear, border=border, 
                        viewbox_minx=minx, viewbox_miny=miny)

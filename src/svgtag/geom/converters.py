@@ -1,10 +1,12 @@
 """Conversions entre Shapely, SVG et mesh"""
-import os
+import io
+import logging
 import re
-import tempfile
 
 from ..svg.base import SVG
 from .operations import resolve_polygons
+
+logger = logging.getLogger(__name__)
 
 # Rotation angles are divided by this factor before trimesh reads the SVG.
 TRIMESH_ANGLE_FACTOR = -3300
@@ -40,21 +42,22 @@ def to_svg(geometry, width=None, height=None):
     
     Args:
         geometry: Polygon Shapely
-        width, height: Dimensions du SVG (auto si None)
+        width, height: Dimensions du SVG ; si None, celles des bornes de la
+            géométrie, viewBox calée sur ces bornes
     
     Returns:
         SVG object
     """
-    # Calculer les dimensions si non fournies
+    minx, miny = 0, 0
     if width is None or height is None:
-        bounds = geometry.bounds  # (minx, miny, maxx, maxy)
-        width = bounds[2] - bounds[0]
-        height = bounds[3] - bounds[1]
-    
+        minx, miny, maxx, maxy = geometry.bounds
+        width = maxx - minx
+        height = maxy - miny
+
     svg = SVG()
     svg.width = width
     svg.height = height
-    svg.viewBox = [0, 0, width, height]
+    svg.viewBox = [minx, miny, width, height]
     svg.unit = "mm"
     
     path_d = to_svg_path(geometry)
@@ -101,7 +104,7 @@ def prepare_for_trimesh_angles(svg):
     )
 
     if converted_count > 0:
-        print(f"  Converted {converted_count} rotation(s) for trimesh")
+        logger.debug("Converted %d rotation(s) for trimesh", converted_count)
 
     # Create new SVG and preserve structure
     new_svg = SVG()
@@ -142,15 +145,7 @@ def svg_to_path2d(svg, prepare=True):
         svg = prepare_for_trimesh_angles(svg)
 
     svg.update_svg_content()
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.svg', delete=False, encoding='utf-8') as tmp:
-        tmp.write(svg.content)
-        tmp_path = tmp.name
-
-    with open(tmp_path, 'rb') as f:
-        path2d = trimesh.load_path(f, file_type='svg')
-
-    os.unlink(tmp_path)
-    return path2d
+    return trimesh.load_path(io.BytesIO(svg.content.encode('utf-8')), file_type='svg')
 
 
 def glyph_polygons(text_svg):
