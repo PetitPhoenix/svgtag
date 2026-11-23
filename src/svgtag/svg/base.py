@@ -636,35 +636,3 @@ class SVG:
         with open(output_file, "w", encoding="utf-8") as file:
             file.write(self.content)
         print(f"SVG saved at {os.path.abspath(output_file)}")
-
-
-def main():
-    # Usage example
-    output_path = "../examples/outputs"
-    svg_content = read_svg("../static/images/network.svg")
-    svg = SVG(svg_content)
-    print(f"Width: {svg.width}{svg.unit}, Height: {svg.height}{svg.unit}")
-    svg.generate_svg_file(os.path.join(output_path, "test_mm.svg"))
-
-    svg.convert_units("px")
-    svg.generate_svg_file(os.path.join(output_path, "test_px.svg"))
-    
-    svg = SVG()
-    svg.add_element(
-        "rect",
-        {
-            "x": "10",
-            "y": "10",
-            "width": "80",
-            "height": "80",
-            "stroke": "black",
-            "fill": "transparent",
-        },
-        translate=(10, 10),
-        scale=None
-    )
-    svg.generate_svg_file(os.path.join(output_path, "test_mm_rect.svg"))
-
-
-if __name__ == "__main__":
-    main()
